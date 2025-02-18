@@ -1,0 +1,150 @@
+import * as Yup from 'yup';
+import { useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+// @mui
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import { Stack, Typography } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+// assets
+import { countries } from 'src/assets/data';
+// components
+import Iconify from 'src/components/iconify';
+import { useSnackbar } from 'src/components/snackbar';
+import FormProvider, { RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
+//
+
+// ----------------------------------------------------------------------
+
+const currentUser = {
+  name: 'Barriga de verme',
+  email: 'emily@gmail.com',
+  country: '',
+};
+
+type Props = {
+  onClose: () => void;
+};
+
+function NavProfileForm({ onClose }: Props) {
+  const { enqueueSnackbar } = useSnackbar();
+
+  const NewUserSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required'),
+    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
+    country: Yup.string().required('Country is required'),
+  });
+
+  const defaultValues = useMemo(
+    () => ({
+      name: currentUser?.name || '',
+      email: currentUser?.email || '',
+      country: currentUser?.country || '',
+    }),
+    []
+  );
+
+  const methods = useForm({
+    resolver: yupResolver(NewUserSchema),
+    defaultValues,
+  });
+
+  const {
+    reset,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
+
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      reset();
+      onClose();
+      enqueueSnackbar('Update success!');
+      console.info('DATA', data);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  return (
+    <FormProvider methods={methods} onSubmit={onSubmit}>
+      <DialogContent>
+        <Stack spacing={6} direction="row">
+          <Box
+            rowGap={1}
+            columnGap={1}
+            display="grid"
+            gridTemplateColumns={{
+              xs: 'repeat(1, 1fr)',
+              sm: 'repeat(1, 1fr)',
+            }}
+            sx={{ width: 1, pt: 3 }}
+          >
+            <Stack direction="row" alignItems="flex-start" justifyContent="space-between">
+              <Typography variant="h3" sx={{ pb: 6.5 }}>
+                Edit profile
+              </Typography>
+              <Box
+                sx={{
+                  width: '104px',
+                  height: '104px',
+                  overflow: 'hidden',
+                  borderRadius: '10px',
+                  bgcolor: 'secondary.main',
+                }}
+              />
+            </Stack>
+
+            <RHFTextField fullWidth name="name" label="Steam nick name <read only field>" />
+            <RHFTextField name="email" label="Email" />
+
+            <RHFAutocomplete
+              name="country"
+              label="Location"
+              placeholder="-Select your country-"
+              options={countries.map((country) => country.label)}
+              getOptionLabel={(option) => option}
+              renderOption={(props, option) => {
+                const { code, label, phone } = countries.filter(
+                  (country) => country.label === option
+                )[0];
+
+                if (!label) {
+                  return null;
+                }
+
+                return (
+                  <li {...props} key={label}>
+                    <Iconify
+                      key={label}
+                      icon={`circle-flags:${code.toLowerCase()}`}
+                      width={28}
+                      sx={{ mr: 1 }}
+                    />
+                    {label} ({code}) +{phone}
+                  </li>
+                );
+              }}
+            />
+          </Box>
+        </Stack>
+      </DialogContent>
+
+      <DialogActions>
+        <Button color="inherit" onClick={onClose}>
+          Cancel
+        </Button>
+
+        <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+          Save profile
+        </LoadingButton>
+      </DialogActions>
+    </FormProvider>
+  );
+}
+
+export default NavProfileForm;
