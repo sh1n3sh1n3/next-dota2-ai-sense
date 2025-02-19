@@ -148,7 +148,6 @@ export default function HomeAuth() {
                     href={paths.auth.steam.login}
                     color="inherit"
                     size="large"
-                    variant="outlined"
                     sx={{ borderColor: 'text.primary' }}
                   >
                     Sign in
