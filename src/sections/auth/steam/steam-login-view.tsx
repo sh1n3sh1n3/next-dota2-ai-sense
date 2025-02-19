@@ -52,7 +52,8 @@ export default function SteamLoginView() {
             sx={{
               // boxShadow: { md: 'none' },
               mx: 'auto',
-              maxWidth: 560,
+              maxWidth: 600,
+              minHeight: 472,
               textAlign: 'center',
               border: 'solid 2px',
               borderRadius: '16px',

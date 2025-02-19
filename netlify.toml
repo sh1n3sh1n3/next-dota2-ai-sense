@@ -6,6 +6,6 @@
   package = "@netlify/plugin-nextjs"
 
 [[redirects]]
-  from = "/dashboard/sense-learn/questions-and-answers/*/send/"
-  to = "/dashboard/sense-learn/questions-and-answers/:splat/send/"
+  from = "/id/*"
+  to = "/id/index.html"
   status = 200
