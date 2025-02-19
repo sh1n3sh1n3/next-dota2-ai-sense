@@ -25,7 +25,7 @@ const answers = [
 
 export default function SavedAnswersView() {
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="xl">
       <AppHeader title="Saved answers" />
       <Box
         gap={2}

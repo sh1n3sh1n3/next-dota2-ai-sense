@@ -36,13 +36,13 @@ export default function QuestionsAndAnswersView() {
   };
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="xl">
       <AppTitle title="Welcome to Sense Learn" />
       {!hasPlan && <UpgradeBox sx={{}} />}
       <Box
         gap={2}
         display="grid"
-        gridTemplateColumns={{ xs: 'repeat(1, 1fr), md: repeat(2, 1fr)' }}
+        gridTemplateColumns={{ xs: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
         sx={{ mt: 10 }}
       >
         <QuestionBox text="Analyze my match using the Match ID" onClick={() => handleClick('0')} />
