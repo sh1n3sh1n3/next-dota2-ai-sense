@@ -36,6 +36,7 @@ export function QuestionBox({ icon = false, text, onClick }: QuestionType) {
           borderColor: 'secondary.main',
           boxShadow: '0px 0px 1px #171a1f12, 0px 0px 2px #171a1f1F',
         }}
+        onClick={onClick}
       >
         <Stack
           direction="row"
