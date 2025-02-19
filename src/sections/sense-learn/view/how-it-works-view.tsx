@@ -1,11 +1,13 @@
 'use client';
 
 // @mui
-import { Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 // components
+import Image from 'src/components/image';
 import AppTitle from 'src/components/app-title';
+//
 import { Box1, Box2, Box3 } from '../components/absolute-box';
 
 // ----------------------------------------------------------------------
@@ -33,19 +35,17 @@ export default function HowItworksView() {
           </Stack>
         </Grid>
       </Grid>
-      {/* <Box
+      <Box
           sx={{
             position: 'absolute',
-            top: '360px',
-            left: `${714 - NAV.W_VERTICAL}px`,
             width: '125px',
             height: '60px',
             borderRadius: '0px',
-            // transform: 'rotate(180deg)',
+            transform: 'scale(-1)'
           }}
         >
           <Image src="/assets/images/how-it-works-arrow.svg" />,
-        </Box> */}
+        </Box>
     </Container>
   );
 }

@@ -18,8 +18,8 @@ export default function Header({ onOpenNav }: Props) {
   return (
     <Stack alignItems="flex-start">
       {!lgUp && (
-        <IconButton onClick={onOpenNav} sx={{ ml: 2, mt: 2 }}>
-          <SvgColor src="/assets/icons/navbar/ic_menu_item.svg" />
+        <IconButton onClick={onOpenNav} sx={{ ml: 1, mt: 1 }}>
+          <SvgColor src="/assets/images/ic_menu_item.svg" />
         </IconButton>
       )}
     </Stack>
