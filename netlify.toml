@@ -4,3 +4,8 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+[[redirects]]
+  from = "/dashboard/sense-learn/questions-and-answers/*/send/"
+  to = "/dashboard/sense-learn/questions-and-answers/:splat/send/"
+  status = 200
