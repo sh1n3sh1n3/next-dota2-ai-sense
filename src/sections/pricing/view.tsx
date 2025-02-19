@@ -31,7 +31,7 @@ export const _pricingPlans = [
     labelAction: 'Upgrade',
   },
   {
-    subscription: 'learn_realtime',
+    subscription: 'Learn Real Time',
     price: 49,
     caption: 'Player like a pro',
     period: '/month',
