@@ -1,5 +1,4 @@
 module.exports = {
-  output: "export", // ✅ Enables static export
   trailingSlash: true,
   modularizeImports: {
     '@mui/material': {

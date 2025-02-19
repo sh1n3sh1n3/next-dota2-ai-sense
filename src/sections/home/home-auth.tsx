@@ -88,7 +88,7 @@ export default function HomeAuth() {
               sx={{
                 // boxShadow: { md: 'none' },
                 mx: 'auto',
-                maxWidth: 560,
+                minWidth: "560px",
                 textAlign: 'center',
                 border: 'solid 2px',
                 borderRadius: '16px',
