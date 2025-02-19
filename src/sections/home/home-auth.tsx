@@ -23,8 +23,9 @@ import {
   Box3,
   CatBox,
   LikeBox,
+  ArrowBox,
   BrushBox,
-  OvalTriangleBox,
+  OvalCircleBox,
 } from '../sense-learn/components/absolute-box';
 
 // ----------------------------------------------------------------------
@@ -47,7 +48,7 @@ export default function HomeAuth() {
       <Container maxWidth="xl" sx={{ height: 1 }}>
         <Stack
           sx={{ width: 1, height: 1 }}
-          spacing={{ xs: 8, md: 2 }}
+          spacing={{ xs: 8, md: 0 }}
           alignItems="center"
           justifyContent="space-around"
           direction={{ xs: 'column', md: 'row' }}
@@ -77,9 +78,10 @@ export default function HomeAuth() {
                     sx={{ borderRadius: '10px', bgcolor: 'primary.main' }}
                   />
                   <Box sx={{ mb: -1.4 }}>
-                    <OvalTriangleBox />
+                    <OvalCircleBox />
                   </Box>
                 </Stack>
+                <ArrowBox />
               </Stack>
             </Stack>
           )}
@@ -88,7 +90,7 @@ export default function HomeAuth() {
               sx={{
                 // boxShadow: { md: 'none' },
                 mx: 'auto',
-                minWidth: 600,
+                maxWidth: 600,
                 minHeight: 472,
                 textAlign: 'center',
                 border: 'solid 2px',

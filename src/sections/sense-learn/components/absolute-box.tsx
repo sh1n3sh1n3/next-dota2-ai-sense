@@ -1,5 +1,5 @@
 // @mui
-import { Avatar, Box, Stack, Typography } from '@mui/material';
+import { Avatar, Box, BoxProps, Stack, Typography } from '@mui/material';
 import Iconify from 'src/components/iconify';
 import Image from 'src/components/image';
 // components
@@ -50,10 +50,15 @@ export function Box1({ text }: { text: string }) {
   );
 }
 
-export function Box2({ text }: { text: string }) {
+interface Box2Props extends BoxProps {
+  text: string;
+  children?: React.ReactNode;
+}
+export function Box2({ text, children }: Box2Props) {
   return (
     <Box
       sx={{
+        position: 'relative',
         p: PADDING.small,
         textAlign: 'left',
         maxWidth: '295px',
@@ -62,8 +67,28 @@ export function Box2({ text }: { text: string }) {
         boxShadow: '0px 0px 1px #171a1f12, 0px 0px 2px #171a1f1F',
       }}
     >
-      <Typography variant="body2">{text}</Typography>
+      <Stack spacing={4} direction="row">
+        <Typography variant="body2">{text}</Typography>
+        {children}
+      </Stack>
     </Box>
+  );
+}
+
+export function ArrowBox() {
+  return (
+    <Box
+      component="img"
+      src="/assets/images/arrow.svg"
+      sx={{
+        width: '125px',
+        height: '60px',
+        borderRadius: '0px',
+        transform: 'scaleY(-1) rotate(-15deg)',
+        filter: 'FlipV',
+        color: 'primary.main',
+      }}
+    />
   );
 }
 
@@ -208,7 +233,7 @@ export function LikeBox() {
   );
 }
 
-export function OvalTriangleBox() {
+export function OvalCircleBox() {
   return (
     <Box
       sx={{
