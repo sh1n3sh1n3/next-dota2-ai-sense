@@ -162,7 +162,7 @@ export default function HomeAuth() {
             <Stack
               spacing={{ xs: 8, md: 0 }}
               justifyContent="space-around"
-              sx={{ height: 1, maxHeight: '472px' }}
+              sx={{ height: 1, maxHeight: '472px', pt: 8 }}
             >
               <Box3 />
               <CatBox />
