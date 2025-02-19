@@ -4,7 +4,7 @@ import { SteamLoginView } from 'src/sections/auth/steam';
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'Jwt: Login',
+  title: 'Steam: Login',
 };
 
 export default function LoginPage() {

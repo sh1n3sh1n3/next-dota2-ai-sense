@@ -21,8 +21,8 @@ import Logo from 'src/components/logo';
 
 const METHODS = [
   {
-    id: 'jwt',
-    label: 'Jwt',
+    id: 'steam',
+    label: 'Steam',
     path: paths.auth.steam.login,
     icon: '/assets/icons/auth/ic_jwt.svg',
   },
