@@ -1,5 +1,5 @@
 // sections
-import { SteamRegisterView } from 'src/sections/auth/steam';
+import { SteamRegisterView } from 'src/sections/auth';
 
 // ----------------------------------------------------------------------
 

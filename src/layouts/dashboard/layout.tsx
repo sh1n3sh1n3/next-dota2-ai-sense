@@ -30,6 +30,7 @@ export default function DashboardLayout({ children }: Props) {
         <NavVertical openNav={nav.value} onCloseNav={nav.onFalse} />
 
         <Main>{children}</Main>
+
       </Box>
     </>
   );

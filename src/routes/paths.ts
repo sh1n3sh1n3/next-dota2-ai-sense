@@ -13,8 +13,8 @@ export const paths = {
   // AUTH
   auth: {
     steam: {
-      login: `${ROOTS.AUTH}/steam/login`,
-      register: `${ROOTS.AUTH}/steam/register`,
+      login: `${ROOTS.AUTH}/login`,
+      register: `${ROOTS.AUTH}/register`,
     },
   },
 
