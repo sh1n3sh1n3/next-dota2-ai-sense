@@ -140,8 +140,10 @@ export function AuthProvider({ children }: Props) {
       data: {
         accessToken: 'accessToken',
         user: {
-          name: 'DemoUser',
-          email: 'Demo@dota.com',
+          name: 'Barriga de verme',
+          email: 'emily@gmail.com',
+          country: 'Portugal',
+          subscription: 'Free',
         },
       },
     };

@@ -2,8 +2,8 @@
 
 import { createContext } from 'react';
 //
-import { AmplifyContextType } from '../../types';
+import { SteamContextType } from '../../types';
 
 // ----------------------------------------------------------------------
 
-export const AuthContext = createContext({} as AmplifyContextType);
+export const AuthContext = createContext({} as SteamContextType);

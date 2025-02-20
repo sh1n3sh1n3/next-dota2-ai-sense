@@ -13,7 +13,13 @@ export type ActionMapType<M extends { [index: string]: any }> = {
       };
 };
 
-export type AuthUserType = null | Record<string, any>;
+export type AuthUserType = null | {
+  name: string;
+  email: string;
+  country: string;
+  accessToken: string;
+  subscription: string;
+};
 
 export type AuthStateType = {
   status?: string;
@@ -45,7 +51,7 @@ type CanRemove = {
   newPassword?: (email: string, code: string, password: string) => Promise<void>;
 };
 
-export type JWTContextType = CanRemove & {
+export type SteamContextType = CanRemove & {
   user: AuthUserType;
   method: string;
   loading: boolean;

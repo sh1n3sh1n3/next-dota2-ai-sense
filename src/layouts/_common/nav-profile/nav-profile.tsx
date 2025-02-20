@@ -2,12 +2,14 @@ import { memo, useCallback, useState } from 'react';
 // @mui
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
-import { List, Stack, Card, Divider, ListItemText } from '@mui/material';
+import { List, Stack, Divider, ListItemText } from '@mui/material';
 // routes
 import { useRouter } from 'src/routes/hooks';
 import { useBoolean } from 'src/hooks/use-boolean';
 // auth
 import { useAuthContext } from 'src/auth/hooks';
+// layouts
+// import { NAV } from 'src/layouts/config-layout';
 // components
 import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color';
@@ -87,9 +89,10 @@ function NavProfile() {
     }
   };
 
-  const renderButton = (
-    <Card
+  const renderContent = (
+    <Box
       sx={{
+        width: '208px',
         borderRadius: '6px',
         boxShadow: 'box-shadow: 0px 0px 1px #171a1f12, 0px 0px 2px #171a1f1F',
       }}
@@ -130,12 +133,12 @@ function NavProfile() {
           </>
         ))}
       </List>
-    </Card>
+    </Box>
   );
 
   return (
     <>
-      {renderButton}
+      {renderContent}
 
       <Dialog
         fullWidth

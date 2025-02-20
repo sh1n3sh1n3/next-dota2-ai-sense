@@ -3,14 +3,14 @@
 // layouts
 import MainLayout from 'src/layouts/main';
 //
-import HomeAuth from '../home-auth';
+import AppAuth from '../app-auth';
 
 // ----------------------------------------------------------------------
 
 export default function HomeView() {
   return (
     <MainLayout>
-      <HomeAuth />
+      <AppAuth />
     </MainLayout>
   );
 }

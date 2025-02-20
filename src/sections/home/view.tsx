@@ -9,7 +9,7 @@ import AppTitle from 'src/components/app-title';
 
 // ----------------------------------------------------------------------
 
-export default function OverviewAppView() {
+export default function HomeView() {
   return (
     <Container maxWidth="xl">
       <Grid container>

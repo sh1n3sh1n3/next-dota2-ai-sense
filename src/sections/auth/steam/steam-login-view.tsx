@@ -73,7 +73,7 @@ export default function SteamLoginView() {
           >
             <Stack spacing={5} alignItems="center" justifyContent="center">
               <Typography variant="h3" sx={{ textAlign: 'center' }}>
-                Sign- up with yor Steam
+                Sign - in with yor Steam
               </Typography>
 
               <Typography variant="body1" sx={{ textAlign: 'left', color: 'text.secondary' }}>

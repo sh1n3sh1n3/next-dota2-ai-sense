@@ -4,7 +4,6 @@ import Box, { BoxProps } from '@mui/material/Box';
 // hooks
 import { useResponsive } from 'src/hooks/use-responsive';
 //
-import { /* HEADER, */ NAV } from '../config-layout';
 import Footer from './footer';
 
 // ----------------------------------------------------------------------
@@ -12,7 +11,7 @@ import Footer from './footer';
 // const SPACING = 8;
 
 export default function Main({ children, sx, ...other }: BoxProps) {
-  const lgUp = useResponsive('up', 'lg');
+  const mdUp = useResponsive('up', 'md');
 
   return (
     <Stack alignItems="center" sx={{ width: 1 }}>
@@ -25,10 +24,11 @@ export default function Main({ children, sx, ...other }: BoxProps) {
           display: 'flex',
           flexDirection: 'column',
           // py: `${HEADER.H_MOBILE + SPACING}px`,
-          ...(lgUp && {
+          ...(mdUp && {
             // px: 2,
             // py: `${HEADER.H_DESKTOP + SPACING}px`,
-            width: `calc(100% - ${NAV.W_VERTICAL}px)`,
+            // width: `calc(100% - ${NAV.W_VERTICAL}px)`,
+            width: 1,
           }),
           ...sx,
         }}

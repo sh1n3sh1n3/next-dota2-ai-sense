@@ -11,13 +11,13 @@ interface Props extends StackProps {
 }
 
 export default function AppTitle({ title, ...other }: Props) {
-  const lgUp = useResponsive('up', 'lg');
+  const mdUp = useResponsive('up', 'md');
 
   return (
     <Stack
       alignItems="center"
       sx={{
-        pt: lgUp ? 6 : 0,
+        pt: mdUp ? 6 : 0,
         backgroundColor: 'common.white',
       }}
       {...other}

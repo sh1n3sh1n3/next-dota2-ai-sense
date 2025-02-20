@@ -23,7 +23,8 @@ export default function HowItworksView() {
         spacing={{xs: 12, md: 4}}
         direction={{ xs: 'column', md: 'row' }}
         alignItems={{ xs: 'center', md: 'flex-end' }}
-        sx={{ mt: 12 }}
+        justifyContent="center"
+        sx={{ mt: 12 ,}}
       >
         <Stack
           spacing={8}
@@ -31,7 +32,7 @@ export default function HowItworksView() {
           sx={{ pb: { xs: 0, md: 4 } }}
         >
           <Box1 text="Minim in in consectetur ut laboris magna " />
-          <Box2 text="Cupidatat sit qui cillum velit laboris sint"></Box2>
+          <Box2 text="Cupidatat sit qui cillum velit laboris sint" />
         </Stack>
         {mdUp && (
           <Stack

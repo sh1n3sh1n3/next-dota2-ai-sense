@@ -26,6 +26,7 @@ import {
   ArrowBox,
   BrushBox,
   OvalCircleBox,
+  OvalHalfCircleBox,
 } from '../sense-learn/components/absolute-box';
 
 // ----------------------------------------------------------------------
@@ -56,6 +57,7 @@ export default function HomeAuth() {
           {mdUp && (
             <Stack
               spacing={{ xs: 8, md: 0 }}
+              alignItems="flex-end"
               justifyContent="space-around"
               sx={{ height: 1, maxHeight: '472px' }}
             >
@@ -63,11 +65,11 @@ export default function HomeAuth() {
                 <Iconify width={36} icon="mdi:code" sx={{ color: '#615151FF' }} />
               </Stack>
               <Stack spacing={1} direction="row">
-                <Avatar />
+                <Avatar src="/assets/images/woman1.jpg" />
                 <Box1 text="Hi !! Just ask you one" />
               </Stack>
               <Stack spacing={1} direction="row">
-                <Avatar />
+                <Avatar src="/assets/images/woman2.jpg" />
                 <Box2 text="Cupidatat sit qui cillum velit laboris sint" />
               </Stack>
               <Stack spacing={2} direction="row">
@@ -88,8 +90,8 @@ export default function HomeAuth() {
           <Stack justifyContent="center" sx={{ height: 1 }}>
             <Card
               sx={{
-                // boxShadow: { md: 'none' },
                 mx: 'auto',
+                minWidth: 300,
                 maxWidth: 600,
                 minHeight: 472,
                 textAlign: 'center',
@@ -109,14 +111,11 @@ export default function HomeAuth() {
                 }),
               }}
             >
-              {/* <Box sx={{ position: 'absolute', top: '100px', right: 0 }}>
-              <OvalHalfCircleBox />
-            </Box> */}
               <Stack spacing={5} alignItems="center" justifyContent="center">
                 <Box
+                  alt="alt"
                   component="img"
                   src="/assets/images/logo.svg"
-                  alt="alt"
                   sx={{ mx: 'auto', width: '105px', height: '90px' }}
                 />
 
@@ -137,7 +136,7 @@ export default function HomeAuth() {
                   <Button
                     fullWidth
                     component={RouterLink}
-                    href={paths.auth.steam.login}
+                    href={paths.auth.steam.register}
                     color="primary"
                     size="large"
                     variant="contained"
@@ -166,13 +165,19 @@ export default function HomeAuth() {
               justifyContent="space-around"
               sx={{ height: 1, maxHeight: '472px', pt: 8 }}
             >
-              <Box3 />
+              <Box sx={{ position: 'relative' }}>
+                <Box3 />
+                <Box sx={{ zIndex: -1, position: 'absolute', top: -120, left: -259 }}>
+                  <OvalHalfCircleBox />
+                </Box>
+              </Box>
+
               <CatBox />
               <Stack direction="column">
                 <Stack direction="row" justifyContent="space-between">
                   <SvgColor
                     src="/assets/images/curve.svg"
-                    sx={{ width: '102px', color: 'secondary.main' }}
+                    sx={{ width: '102px', color: '#ff6a6a' }}
                   />
                   <BrushBox />
                 </Stack>

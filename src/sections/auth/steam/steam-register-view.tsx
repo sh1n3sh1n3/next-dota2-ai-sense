@@ -1,167 +1,108 @@
 'use client';
 
-import * as Yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { useState } from 'react';
-import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import LoadingButton from '@mui/lab/LoadingButton';
-import Link from '@mui/material/Link';
-import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import InputAdornment from '@mui/material/InputAdornment';
-// hooks
-import { useBoolean } from 'src/hooks/use-boolean';
+import { alpha, styled } from '@mui/material/styles';
 // routes
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
-import { useSearchParams, useRouter } from 'src/routes/hooks';
+import { useRouter } from 'src/routes/hooks';
 // config
 import { PATH_AFTER_LOGIN } from 'src/config-global';
-// auth
+// layouts
+import { HEADER } from 'src/layouts/config-layout';
+// hooks
 import { useAuthContext } from 'src/auth/hooks';
-// components
-import Iconify from 'src/components/iconify';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
+
+// ----------------------------------------------------------------------
+
+const StyledRoot = styled('div')(({ theme }) => ({
+  height: '100%',
+  [theme.breakpoints.down('md')]: {
+    marginTop: HEADER.H_DESKTOP_OFFSET,
+    paddingBottom: HEADER.H_DESKTOP_OFFSET,
+  },
+}));
 
 // ----------------------------------------------------------------------
 
 export default function SteamRegisterView() {
-  const { register } = useAuthContext();
+  const { login } = useAuthContext();
 
   const router = useRouter();
 
-  const [errorMsg, setErrorMsg] = useState('');
-
-  const searchParams = useSearchParams();
-
-  const returnTo = searchParams.get('returnTo');
-
-  const password = useBoolean();
-
-  const RegisterSchema = Yup.object().shape({
-    firstName: Yup.string().required('First name required'),
-    lastName: Yup.string().required('Last name required'),
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    password: Yup.string().required('Password is required'),
-  });
-
-  const defaultValues = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-  };
-
-  const methods = useForm({
-    resolver: yupResolver(RegisterSchema),
-    defaultValues,
-  });
-
-  const {
-    reset,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = methods;
-
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = async () => {
     try {
-      await register?.(data.email, data.password, data.firstName, data.lastName);
+      await login?.('demo@minimals.cc', 'demo1234');
 
-      router.push(returnTo || PATH_AFTER_LOGIN);
+      router.push(PATH_AFTER_LOGIN);
     } catch (error) {
       console.error(error);
-      reset();
-      setErrorMsg(typeof error === 'string' ? error : error.message);
     }
-  });
-
-  const renderHead = (
-    <Stack spacing={2} sx={{ mb: 5, position: 'relative' }}>
-      <Typography variant="h4">Get started absolutely free</Typography>
-
-      <Stack direction="row" spacing={0.5}>
-        <Typography variant="body2"> Already have an account? </Typography>
-
-        <Link href={paths.auth.steam.login} component={RouterLink} variant="subtitle2">
-          Sign in
-        </Link>
-      </Stack>
-    </Stack>
-  );
-
-  const renderTerms = (
-    <Typography
-      component="div"
-      sx={{
-        color: 'text.secondary',
-        mt: 2.5,
-        typography: 'caption',
-        textAlign: 'center',
-      }}
-    >
-      {'By signing up, I agree to '}
-      <Link underline="always" color="text.primary">
-        Terms of Service
-      </Link>
-      {' and '}
-      <Link underline="always" color="text.primary">
-        Privacy Policy
-      </Link>
-      .
-    </Typography>
-  );
-
-  const renderForm = (
-    <FormProvider methods={methods} onSubmit={onSubmit}>
-      <Stack spacing={2.5}>
-        {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
-
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <RHFTextField name="firstName" label="First name" />
-          <RHFTextField name="lastName" label="Last name" />
-        </Stack>
-
-        <RHFTextField name="email" label="Email address" />
-
-        <RHFTextField
-          name="password"
-          label="Password"
-          type={password.value ? 'text' : 'password'}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={password.onToggle} edge="end">
-                  <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-
-        <LoadingButton
-          fullWidth
-          color="inherit"
-          size="large"
-          type="submit"
-          variant="contained"
-          loading={isSubmitting}
-        >
-          Create account
-        </LoadingButton>
-      </Stack>
-    </FormProvider>
-  );
+  };
 
   return (
-    <>
-      {renderHead}
+    <StyledRoot>
+      <Container maxWidth="xl" sx={{ height: 1 }}>
+        <Stack justifyContent="center" sx={{ height: 1 }}>
+          <Card
+            sx={{
+              // boxShadow: { md: 'none' },
+              mx: 'auto',
+              maxWidth: 600,
+              minHeight: 472,
+              textAlign: 'center',
+              border: 'solid 2px',
+              borderRadius: '16px',
+              position: 'relative',
+              borderColor: 'secondary.main',
+              bgcolor: 'background.default',
+              py: { xs: 2, md: 7 },
+              px: { xs: 2, md: 14 },
+              boxShadow: (theme) => ({
+                md: `-40px 40px 80px ${
+                  theme.palette.mode === 'light'
+                    ? alpha(theme.palette.grey[500], 0.16)
+                    : alpha(theme.palette.common.black, 0.4)
+                }`,
+              }),
+            }}
+          >
+            <Stack spacing={5} alignItems="center" justifyContent="center">
+              <Typography variant="h3" sx={{ textAlign: 'center' }}>
+                Sign - up with yor Steam
+              </Typography>
 
-      {renderForm}
+              <Typography variant="body1" sx={{ textAlign: 'left', color: 'text.secondary' }}>
+                We need to login with you Steam user, to get information and statistics from Dota 2
+                gameplays
+              </Typography>
 
-      {renderTerms}
-    </>
+              <Box
+                alt="alt"
+                component="img"
+                src="/assets/images/steam.png"
+                sx={{ mx: 'auto', width: '311px', height: '74px' }}
+              />
+
+              <Stack sx={{ width: 1 }}>
+                <Button
+                  fullWidth
+                  color="primary"
+                  size="large"
+                  variant="contained"
+                  onClick={onSubmit}
+                >
+                  Continue
+                </Button>
+              </Stack>
+            </Stack>
+          </Card>
+        </Stack>
+      </Container>
+    </StyledRoot>
   );
 }

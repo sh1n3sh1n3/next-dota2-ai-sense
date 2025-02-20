@@ -9,9 +9,12 @@ import { Stack, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
+// hooks
+import { useAuthUser } from 'src/hooks/use-auth';
 // assets
 import { countries } from 'src/assets/data';
 // components
+import Image from 'src/components/image';
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
@@ -19,17 +22,13 @@ import FormProvider, { RHFTextField, RHFAutocomplete } from 'src/components/hook
 
 // ----------------------------------------------------------------------
 
-const currentUser = {
-  name: 'Barriga de verme',
-  email: 'emily@gmail.com',
-  country: '',
-};
-
 type Props = {
   onClose: () => void;
 };
 
 function NavProfileForm({ onClose }: Props) {
+  const { user } = useAuthUser();
+
   const { enqueueSnackbar } = useSnackbar();
 
   const NewUserSchema = Yup.object().shape({
@@ -40,11 +39,11 @@ function NavProfileForm({ onClose }: Props) {
 
   const defaultValues = useMemo(
     () => ({
-      name: currentUser?.name || '',
-      email: currentUser?.email || '',
-      country: currentUser?.country || '',
+      name: user?.name || '',
+      email: user?.email || '',
+      country: user?.country || '',
     }),
-    []
+    [user]
   );
 
   const methods = useForm({
@@ -96,7 +95,9 @@ function NavProfileForm({ onClose }: Props) {
                   borderRadius: '10px',
                   bgcolor: 'secondary.main',
                 }}
-              />
+              >
+                <Image src="/assets/images/person.jpg" sx={{ width: 1, height: 1 }} />
+              </Box>
             </Stack>
 
             <RHFTextField fullWidth name="name" label="Steam nick name <read only field>" />
@@ -136,11 +137,13 @@ function NavProfileForm({ onClose }: Props) {
 
       <DialogActions>
         <Button color="inherit" onClick={onClose}>
-          Cancel
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            Cancel
+          </Typography>
         </Button>
 
-        <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-          Save profile
+        <LoadingButton type="submit" variant="contained" color="primary" loading={isSubmitting}>
+          <Typography variant="body2">Save profile</Typography>
         </LoadingButton>
       </DialogActions>
     </FormProvider>

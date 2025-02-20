@@ -1,5 +1,5 @@
 // sections
-import { HomeView } from 'src/sections/home/view';
+import { AppView } from 'src/sections/app/view';
 
 // ----------------------------------------------------------------------
 
@@ -8,5 +8,5 @@ export const metadata = {
 };
 
 export default function HomePage() {
-  return <HomeView />;
+  return <AppView />;
 }

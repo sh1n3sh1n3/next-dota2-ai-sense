@@ -13,11 +13,11 @@ type Props = {
 };
 
 export default function Header({ onOpenNav }: Props) {
-  const lgUp = useResponsive('up', 'lg');
+  const mdUp = useResponsive('up', 'md');
 
   return (
     <Stack alignItems="flex-start">
-      {!lgUp && (
+      {!mdUp && (
         <IconButton onClick={onOpenNav} sx={{ ml: 1, mt: 1 }}>
           <SvgColor src="/assets/images/ic_menu_item.svg" />
         </IconButton>

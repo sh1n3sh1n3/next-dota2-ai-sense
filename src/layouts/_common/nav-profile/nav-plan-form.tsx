@@ -4,12 +4,12 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import { Stack, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 // components
+import Image from 'src/components/image';
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 //
@@ -85,7 +85,17 @@ function NavPlanForm({ onClose }: Props) {
               <Typography variant="h3" sx={{ pb: 6.5 }}>
                 Plan information
               </Typography>
-              <Box sx={{ width: '104px', height: '104px', bgcolor: 'secondary.main' }} />
+              <Box
+                sx={{
+                  width: '104px',
+                  height: '104px',
+                  overflow: 'hidden',
+                  borderRadius: '10px',
+                  bgcolor: 'secondary.main',
+                }}
+              >
+                <Image src="/assets/images/person.jpg" sx={{ width: 1, height: 1 }} />
+              </Box>
             </Stack>
 
             <RHFTextField name="due" label="DotaSense member since" />
@@ -96,12 +106,14 @@ function NavPlanForm({ onClose }: Props) {
       </DialogContent>
 
       <DialogActions>
-        <Button color="inherit" onClick={onClose}>
-          Cancel
-        </Button>
+        {/* <Button color="inherit" onClick={onClose}>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            Cancel
+          </Typography>
+        </Button> */}
 
-        <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-          Save profile
+        <LoadingButton type="submit" variant="contained" color="primary" loading={isSubmitting}>
+          <Typography variant="body2">Cancel my plan</Typography>
         </LoadingButton>
       </DialogActions>
     </FormProvider>

@@ -24,7 +24,7 @@ export default function DashboardLayout({ children }: Props) {
         sx={{
           minHeight: 1,
           display: 'flex',
-          flexDirection: { xs: 'column', lg: 'row' },
+          flexDirection: { xs: 'column', md: 'row' },
         }}
       >
         <NavVertical openNav={nav.value} onCloseNav={nav.onFalse} />

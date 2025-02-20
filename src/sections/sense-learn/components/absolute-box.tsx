@@ -125,7 +125,7 @@ export function Box3() {
             />
           </Stack>
 
-          <Avatar sx={{ width: 36, height: 36 }} />
+          <Avatar src="/assets/images/woman3.jpg" sx={{ width: 36, height: 36 }} />
         </Stack>
       </Box>
       <Box

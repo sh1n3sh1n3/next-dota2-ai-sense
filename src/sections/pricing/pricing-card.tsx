@@ -11,7 +11,8 @@ import Iconify from 'src/components/iconify';
 // ----------------------------------------------------------------------
 
 type Props = CardProps & {
-  card: {
+  active: boolean;
+  plan: {
     subscription: string;
     price: number;
     caption: string;
@@ -20,17 +21,16 @@ type Props = CardProps & {
     labelAction: string;
     lists: string[];
   };
-  index: number;
 };
 
-export default function PricingCard({ card, sx, ...other }: Props) {
-  const { subscription, price, caption, period, description, lists, labelAction } = card;
+export default function PricingCard({ plan, active, sx, ...other }: Props) {
+  const { subscription, price, caption, period, description, lists, labelAction } = plan;
 
-  const free = subscription === 'free';
+  const free = subscription === 'Free';
 
-  const learn = subscription === 'learn';
+  const learn = subscription === 'Learn';
 
-  const learn_realtime = subscription === 'learn_realtime';
+  const learn_realtime = subscription === 'Learn Real Time';
 
   const renderList = (
     <Stack spacing={1}>
@@ -136,7 +136,7 @@ export default function PricingCard({ card, sx, ...other }: Props) {
         fullWidth
         size="large"
         variant={learn ? 'contained' : 'outlined'}
-        disabled={free}
+        disabled={active}
         color={learn ? 'primary' : 'inherit'}
         sx={{ mt: 4 }}
       >
