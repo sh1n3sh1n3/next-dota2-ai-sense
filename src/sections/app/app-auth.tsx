@@ -43,6 +43,17 @@ const StyledRoot = styled('div')(({ theme }) => ({
 
 export default function HomeAuth() {
   const mdUp = useResponsive('up', 'md');
+  const SignIn = () => {
+    const params = new URLSearchParams({
+      'openid.ns': 'http://specs.openid.net/auth/2.0',
+      'openid.mode': 'checkid_setup',
+      'openid.return_to': 'http://localhost:8081/auth/register',
+      'openid.realm': 'http://localhost:8081/',
+      'openid.identity': 'http://specs.openid.net/auth/2.0/identifier_select',
+      'openid.claimed_id': 'http://specs.openid.net/auth/2.0/identifier_select',
+    });
+    window.location.href = `https://steamcommunity.com/openid/login?${params.toString()}`;
+  }
 
   return (
     <StyledRoot>
@@ -103,11 +114,10 @@ export default function HomeAuth() {
                 py: { xs: 2, md: 7 },
                 px: { xs: 2, md: 14 },
                 boxShadow: (theme) => ({
-                  md: `-40px 40px 80px ${
-                    theme.palette.mode === 'light'
-                      ? alpha(theme.palette.grey[500], 0.16)
-                      : alpha(theme.palette.common.black, 0.4)
-                  }`,
+                  md: `-40px 40px 80px ${theme.palette.mode === 'light'
+                    ? alpha(theme.palette.grey[500], 0.16)
+                    : alpha(theme.palette.common.black, 0.4)
+                    }`,
                 }),
               }}
             >
@@ -146,8 +156,9 @@ export default function HomeAuth() {
 
                   <Button
                     fullWidth
-                    component={RouterLink}
-                    href={paths.auth.steam.login}
+                    // component={RouterLink}
+                    onClick={SignIn}
+                    // href={paths.auth.steam.login}
                     color="inherit"
                     size="large"
                     sx={{ borderColor: 'text.primary' }}

@@ -12,6 +12,7 @@ import { useLocales } from 'src/locales';
 // components
 import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color';
+import { useEffect, useState } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -21,6 +22,14 @@ type Props = {
 
 export default function NavUpgrade({ onOpen }: Props) {
   const { t } = useLocales();
+  const [user, setUser] = useState<any>("")
+  useEffect(() => {
+    const storedPlayer = localStorage.getItem("user");
+    if (storedPlayer) {
+      const player = JSON.parse(storedPlayer);
+      setUser(player)
+    }
+  }, [])
 
   return (
     <Card
@@ -34,9 +43,9 @@ export default function NavUpgrade({ onOpen }: Props) {
       <Stack spacing={2.5} alignItems="center">
         <Stack direction="row" justifyContent="space-between" sx={{ width: 1 }}>
           <Stack spacing={1} direction="row" alignItems="center">
-            <Avatar />
+            <Avatar src={user?.avatar} />
             <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-              Emily
+              {user?.realname}
             </Typography>
           </Stack>
           <IconButton

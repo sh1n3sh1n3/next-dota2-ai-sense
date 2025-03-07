@@ -1,14 +1,18 @@
 export const _questions = [
-  { id: '1', text: 'Which items would be most recommended for this Match ID?' },
-  { id: '2', text: 'Which items would be most recommended for this Match ID?' },
-  { id: '3', text: 'Which items would be most recommended for this Match ID?' },
-  { id: '4', text: 'Which items would be most recommended for this Match ID?' },
-  { id: '5', text: 'Which items would be most recommended for this Match ID?' },
-  { id: '6', text: 'Which items would be most recommended for this Match ID?' },
-  { id: '7', text: 'Which items would be most recommended for this Match ID?' },
-  { id: '8', text: 'Which items would be most recommended for this Match ID?' },
-  { id: '9', text: 'Which items would be most recommended for this Match ID?' },
-  { id: '10', text: 'Which items would be most recommended for this Match ID?' },
+  { id: '1', text: 'Analyze my match using the Match ID?', type: 'question' },
+  { id: '2', text: 'Which items would be most recommended for this Match ID?', type: 'question' },
+  { id: '3', text: 'What should be my recommended XPM & GPM for this match?', type: 'question' },
+  { id: '4', text: 'What would be the best lane strategy for this Match ID?', type: 'question' },
+  {
+    id: '5',
+    text: 'What are the main mistakes I have been making in my recent matches with this hero?',
+    type: 'question',
+  },
+  { id: '6', text: `"Industrial Revolution's impact on geopolitics."`, type: 'question' },
+  { id: '7', text: `"Industrial Revolution's impact on geopolitics."`, type: 'question' },
+  { id: '8', text: `"Industrial Revolution's impact on geopolitics."`, type: 'question' },
+  { id: '9', text: `"Industrial Revolution's impact on geopolitics."`, type: 'question' },
+  { id: '10', text: `"Industrial Revolution's impact on geopolitics."`, type: 'question' },
 ];
 
 export const _answers = [

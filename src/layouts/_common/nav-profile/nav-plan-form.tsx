@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
@@ -28,6 +28,14 @@ type Props = {
 
 function NavPlanForm({ onClose }: Props) {
   const { enqueueSnackbar } = useSnackbar();
+  const [user, setUser] = useState<any>("")
+  useEffect(() => {
+    const storedPlayer = localStorage.getItem("user");
+    if (storedPlayer) {
+      const player = JSON.parse(storedPlayer);
+      setUser(player)
+    }
+  }, [])
 
   const NewUserSchema = Yup.object().shape({
     due: Yup.string().required('Date is required'),
@@ -94,7 +102,7 @@ function NavPlanForm({ onClose }: Props) {
                   bgcolor: 'secondary.main',
                 }}
               >
-                <Image src="/assets/images/person.jpg" sx={{ width: 1, height: 1 }} />
+                <Image src={user.avatarfull} sx={{ width: 1, height: 1 }} />
               </Box>
             </Stack>
 

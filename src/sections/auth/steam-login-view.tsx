@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 // @mui
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -8,6 +9,7 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { alpha, styled } from '@mui/material/styles';
+import LoadingButton from '@mui/lab/LoadingButton';
 // routes
 import { useRouter } from 'src/routes/hooks';
 // config
@@ -31,16 +33,26 @@ const StyledRoot = styled('div')(({ theme }) => ({
 
 export default function SteamLoginView() {
   const { login } = useAuthContext();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+  const params: any = new URLSearchParams(window.location.search);
 
   const router = useRouter();
 
   const onSubmit = async () => {
     try {
-      await login?.('demo@minimals.cc', 'demo1234');
+      const claimedId = params.get('openid.claimed_id');
+      if (claimedId) {
+        const steamid = claimedId.split('/').pop();
+        console.log("steamId", steamid);
+        setIsSubmitting(true);
+        await login(steamid);
 
-      router.push(PATH_AFTER_LOGIN);
+        router.push(PATH_AFTER_LOGIN);
+        setIsSubmitting(false);
+      }
     } catch (error) {
-      console.error(error);
+      setIsSubmitting(false);
+      console.error(error)
     }
   };
 
@@ -63,17 +75,16 @@ export default function SteamLoginView() {
               py: { xs: 2, md: 7 },
               px: { xs: 2, md: 14 },
               boxShadow: (theme) => ({
-                md: `-40px 40px 80px ${
-                  theme.palette.mode === 'light'
-                    ? alpha(theme.palette.grey[500], 0.16)
-                    : alpha(theme.palette.common.black, 0.4)
-                }`,
+                md: `-40px 40px 80px ${theme.palette.mode === 'light'
+                  ? alpha(theme.palette.grey[500], 0.16)
+                  : alpha(theme.palette.common.black, 0.4)
+                  }`,
               }),
             }}
           >
             <Stack spacing={5} alignItems="center" justifyContent="center">
-              <Typography variant="h3" sx={{ textAlign: 'center' }}>
-                Sign - in with yor Steam
+              <Typography variant="h3" sx={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
+                Sign - in with your Steam
               </Typography>
 
               <Typography variant="body1" sx={{ textAlign: 'left', color: 'text.secondary' }}>
@@ -89,15 +100,15 @@ export default function SteamLoginView() {
               />
 
               <Stack sx={{ width: 1 }}>
-                <Button
-                  fullWidth
+                <LoadingButton fullWidth
                   color="primary"
                   size="large"
                   variant="contained"
                   onClick={onSubmit}
+                  loading={isSubmitting}
                 >
                   Continue
-                </Button>
+                </LoadingButton>
               </Stack>
             </Stack>
           </Card>

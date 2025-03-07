@@ -16,6 +16,8 @@ import { PATH_AFTER_LOGIN } from 'src/config-global';
 import { HEADER } from 'src/layouts/config-layout';
 // hooks
 import { useAuthContext } from 'src/auth/hooks';
+import { useState } from 'react';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 // ----------------------------------------------------------------------
 
@@ -31,16 +33,26 @@ const StyledRoot = styled('div')(({ theme }) => ({
 
 export default function SteamRegisterView() {
   const { login } = useAuthContext();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+  const params: any = new URLSearchParams(window.location.search);
 
   const router = useRouter();
 
   const onSubmit = async () => {
     try {
-      await login?.('demo@minimals.cc', 'demo1234');
+      const claimedId = params.get('openid.claimed_id');
+      if (claimedId) {
+        const steamid = claimedId.split('/').pop();
+        console.log("steamId", steamid);
+        setIsSubmitting(true);
+        await login(steamid);
 
-      router.push(PATH_AFTER_LOGIN);
+        router.push(PATH_AFTER_LOGIN);
+        setIsSubmitting(false);
+      }
     } catch (error) {
-      console.error(error);
+      setIsSubmitting(false);
+      console.error(error)
     }
   };
 
@@ -63,11 +75,10 @@ export default function SteamRegisterView() {
               py: { xs: 2, md: 7 },
               px: { xs: 2, md: 14 },
               boxShadow: (theme) => ({
-                md: `-40px 40px 80px ${
-                  theme.palette.mode === 'light'
-                    ? alpha(theme.palette.grey[500], 0.16)
-                    : alpha(theme.palette.common.black, 0.4)
-                }`,
+                md: `-40px 40px 80px ${theme.palette.mode === 'light'
+                  ? alpha(theme.palette.grey[500], 0.16)
+                  : alpha(theme.palette.common.black, 0.4)
+                  }`,
               }),
             }}
           >
@@ -89,15 +100,15 @@ export default function SteamRegisterView() {
               />
 
               <Stack sx={{ width: 1 }}>
-                <Button
-                  fullWidth
+                <LoadingButton fullWidth
                   color="primary"
                   size="large"
                   variant="contained"
                   onClick={onSubmit}
+                  loading={isSubmitting}
                 >
                   Continue
-                </Button>
+                </LoadingButton>
               </Stack>
             </Stack>
           </Card>

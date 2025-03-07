@@ -15,6 +15,8 @@ import { ActionMapType, AuthStateType, AuthUserType } from '../../types';
 // Customer will need to do some extra handling yourself if you want to extend the logic and other features...
 
 // ----------------------------------------------------------------------
+console.log("env", process.env.NEXT_PUBLIC_API_URL)
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL + '/api';
 
 enum Types {
   INITIAL = 'INITIAL',
@@ -128,28 +130,15 @@ export function AuthProvider({ children }: Props) {
   }, [initialize]);
 
   // LOGIN
-  const login = useCallback(async (email: string, password: string) => {
+  const login = useCallback(async (steamid: string) => {
     const data = {
-      email,
-      password,
+      steamid
     };
-    console.log(data);
 
-    // const res = await axios.post(endpoints.auth.login, data);
-    const res = {
-      data: {
-        accessToken: 'accessToken',
-        user: {
-          name: 'Barriga de verme',
-          email: 'emily@gmail.com',
-          country: 'Portugal',
-          subscription: 'Free',
-        },
-      },
-    };
+    const res = await axios.post(endpoints.auth.login, data);
 
     const { accessToken, user } = res.data;
-
+    localStorage.setItem('user', JSON.stringify(user))
     setSession(accessToken);
 
     dispatch({
@@ -165,13 +154,8 @@ export function AuthProvider({ children }: Props) {
 
   // REGISTER
   const register = useCallback(
-    async (email: string, password: string, firstName: string, lastName: string) => {
-      const data = {
-        email,
-        password,
-        firstName,
-        lastName,
-      };
+    async (steamid: string) => {
+      const data = { steamid };
 
       const res = await axios.post(endpoints.auth.register, data);
 

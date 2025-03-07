@@ -10,6 +10,7 @@ import { _answer, _questions, _questions_answers } from 'src/_mock';
 import AppHeader from 'src/components/app-header';
 //
 import { MatchBox, MessageBox, DetaultQuestionBox } from '../components';
+import { aiAnswer } from 'src/helper/api_steam_helper';
 
 // ----------------------------------------------------------------------
 
@@ -17,12 +18,20 @@ type Props = {
   id: string;
 };
 
+type chatType = {
+  type: string;
+  text: string;
+}
+
 export default function QuestionsAndAnswersSendView({ id }: Props) {
+
   const [value, setValue] = useState('');
-  const [QA, setQA] = useState(_questions_answers);
+  const [chatId, setChatId] = useState<string>();
+  const [QA, setQA] = useState<chatType[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const defaultQuestion = _questions.find((question) => question.id === id);
+
 
   // ✅ Scroll down function
   const scrollToBottom = () => {
@@ -38,10 +47,17 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
     setValue(event.target.value);
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!value) return;
-    setQA([...QA, { type: 'question', text: value }, { type: 'answer', text: _answer }]);
-    setValue('');
+    const res: any = await aiAnswer({ message: value, chatId })
+    if (res.result) {
+      const answer = res.result;
+      if (res.userId) {
+        setChatId(res.userId)
+      }
+      setQA([...QA, { type: 'question', text: value }, { type: 'answer', text: answer }]);
+      setValue('');
+    }
   };
 
   return (
@@ -74,9 +90,8 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
             <>
               {item.type === 'answer' ? (
                 <DetaultQuestionBox>
-                  <Typography variant="h6" sx={{ fontWeight: 400 }}>
-                    {item.text}
-                  </Typography>
+                  <Typography variant="inherit" sx={{ fontWeight: 400 }} dangerouslySetInnerHTML={{ __html: item.text.replace(/[*#]/g, "").replace(/\n/g, "<br />") }} />
+
                 </DetaultQuestionBox>
               ) : (
                 <MatchBox>

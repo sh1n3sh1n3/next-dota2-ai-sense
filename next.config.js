@@ -15,4 +15,7 @@ module.exports = {
     });
     return config;
   },
+  env: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+  },
 };
