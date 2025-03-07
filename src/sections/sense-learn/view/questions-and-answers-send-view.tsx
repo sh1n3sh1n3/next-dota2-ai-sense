@@ -8,9 +8,9 @@ import { Box, Stack, Typography } from '@mui/material';
 import { _questions, } from 'src/_mock';
 // components
 import AppHeader from 'src/components/app-header';
+import { aiAnswer } from 'src/helper/api_steam_helper';
 //
 import { MatchBox, MessageBox, DetaultQuestionBox } from '../components';
-import { aiAnswer } from 'src/helper/api_steam_helper';
 
 // ----------------------------------------------------------------------
 

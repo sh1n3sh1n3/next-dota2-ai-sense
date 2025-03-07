@@ -9,8 +9,6 @@ import { Stack, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-// hooks
-import { useAuthUser } from 'src/hooks/use-auth';
 // assets
 import { countries } from 'src/assets/data';
 // components

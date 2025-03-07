@@ -1,22 +1,19 @@
 import axios from 'axios';
+
 axios.defaults.baseURL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 axios.interceptors.response.use(
   async (response) => {
-    if (response && response.headers && response.headers.get) {
+    if (response && response.headers && response.headers['content-type']) {
       const contentType = response.headers['content-type'];
-      if (
-        contentType &&
-        contentType.indexOf('application/json') !== -1 &&
-        response.request.responseType === 'blob'
-      ) {
+      if (contentType.includes('application/json') && response.request.responseType === 'blob') {
         response.data = await response.data.text();
         response.data = JSON.parse(response.data);
       }
-      return response.data ? response.data : response;
     }
+    return response; // Ensure a return value in all cases
   },
   async (error) => {
     const { response } = error;
@@ -24,12 +21,12 @@ axios.interceptors.response.use(
       localStorage.removeItem('token');
     }
 
-    return Promise.reject(error.response);
+    return Promise.reject(response || error); // Ensure rejection always has a value
   }
 );
 
 class APIClient {
-  get = (url: string, params: { [key: string]: string | number }) => {
+  static get = (url: string, params: { [key: string]: string | number }) => {
     let response;
 
     const paramKeys: string[] = [];
@@ -49,19 +46,19 @@ class APIClient {
     return response;
   };
 
-  create = (url: string, data: any, p0?: { headers: { 'Content-Type': string } }) => {
+  static create = (url: string, data: any, p0?: { headers: { 'Content-Type': string } }) => {
     return axios.post(url, data, p0);
   };
 
-  update = (url: string, data: any) => {
+  static update = (url: string, data: any) => {
     return axios.patch(url, data);
   };
 
-  put = (url: string, data: any) => {
+  static put = (url: string, data: any) => {
     return axios.put(url, data);
   };
 
-  delete = (url: string, config: any) => {
+  static delete = (url: string, config: any) => {
     return axios.delete(url, { ...config });
   };
 }
