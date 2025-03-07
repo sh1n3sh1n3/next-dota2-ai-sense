@@ -69,18 +69,18 @@ export function RHFSelect({
 
 // ----------------------------------------------------------------------
 
-type RHFMultiSelectProps = SelectProps & {
-  name: string;
-  label?: string;
-  chip?: boolean;
-  checkbox?: boolean;
-  placeholder?: string;
-  helperText?: React.ReactNode;
-  options: {
-    label: string;
-    value: string;
-  }[];
-};
+// type RHFMultiSelectProps = SelectProps & {
+//   name: string;
+//   label?: string;
+//   chip?: boolean;
+//   checkbox?: boolean;
+//   placeholder?: string;
+//   helperText?: React.ReactNode;
+//   options: {
+//     label: string;
+//     value: string;
+//   }[];
+// };
 
 // export function RHFMultiSelect({
 //   name,

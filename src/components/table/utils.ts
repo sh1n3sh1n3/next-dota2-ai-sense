@@ -4,19 +4,15 @@ export function emptyRows(page: number, rowsPerPage: number, arrayLength: number
   return page ? Math.max(0, (1 + page) * rowsPerPage - arrayLength) : 0;
 }
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (a[orderBy] === null) {
-    return 1;
-  }
-  if (b[orderBy] === null) {
-    return -1;
-  }
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
+function descendingComparator<T>(a: T, b: T, orderBy: keyof T): number {
+  const valueA = a[orderBy];
+  const valueB = b[orderBy];
+
+  if (valueA == null) return 1; // Handle null or undefined
+  if (valueB == null) return -1;
+
+  if (valueB < valueA) return -1;
+  if (valueB > valueA) return 1;
   return 0;
 }
 
