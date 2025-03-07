@@ -26,7 +26,7 @@ axios.interceptors.response.use(
 );
 
 class APIClient {
-  get = (url: string, params: { [key: string]: string | number }) => {
+  static get = (url: string, params: { [key: string]: string | number }) => {
     let response;
 
     const paramKeys: string[] = [];
@@ -46,14 +46,14 @@ class APIClient {
     return response;
   };
 
-  create = (url: string, data: any, p0?: { headers: { 'Content-Type': string } }) =>
+  static create = (url: string, data: any, p0?: { headers: { 'Content-Type': string } }) =>
     axios.post(url, data, p0);
 
-  update = (url: string, data: any) => axios.patch(url, data);
+  static update = (url: string, data: any) => axios.patch(url, data);
 
-  put = (url: string, data: any) => axios.put(url, data);
+  static put = (url: string, data: any) => axios.put(url, data);
 
-  delete = (url: string, config: any) => axios.delete(url, { ...config });
+  static delete = (url: string, config: any) => axios.delete(url, { ...config });
 }
 
 export { APIClient };
