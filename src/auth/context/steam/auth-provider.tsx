@@ -16,7 +16,7 @@ import { ActionMapType, AuthStateType, AuthUserType } from '../../types';
 
 // ----------------------------------------------------------------------
 console.log("env", process.env.NEXT_PUBLIC_API_URL)
-axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL + '/api';
+axios.defaults.baseURL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
 enum Types {
   INITIAL = 'INITIAL',

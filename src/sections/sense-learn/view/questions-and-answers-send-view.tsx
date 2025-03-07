@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import Container from '@mui/material/Container';
 import { Box, Stack, Typography } from '@mui/material';
 // _mock
-import { _answer, _questions, _questions_answers } from 'src/_mock';
+import { _questions, } from 'src/_mock';
 // components
 import AppHeader from 'src/components/app-header';
 //
