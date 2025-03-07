@@ -1,5 +1,3 @@
-// utils/cryptoUtils.ts
-
 import CryptoJS from 'crypto-js';
 
 const ENCRYPTION_KEY = 'y0ur-s3cret-Key';

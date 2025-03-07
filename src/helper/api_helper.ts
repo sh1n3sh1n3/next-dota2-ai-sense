@@ -33,7 +33,7 @@ class APIClient {
 
     if (params) {
       Object.keys(params).map((key: string) => {
-        paramKeys.push(key + '=' + params[key]);
+        paramKeys.push(`${key} = ${params[key]}`);
         return paramKeys;
       });
 
@@ -46,21 +46,14 @@ class APIClient {
     return response;
   };
 
-  static create = (url: string, data: any, p0?: { headers: { 'Content-Type': string } }) => {
-    return axios.post(url, data, p0);
-  };
+  static create = (url: string, data: any, p0?: { headers: { 'Content-Type': string } }) =>
+    axios.post(url, data, p0);
 
-  static update = (url: string, data: any) => {
-    return axios.patch(url, data);
-  };
+  static update = (url: string, data: any) => axios.patch(url, data);
 
-  static put = (url: string, data: any) => {
-    return axios.put(url, data);
-  };
+  static put = (url: string, data: any) => axios.put(url, data);
 
-  static delete = (url: string, config: any) => {
-    return axios.delete(url, { ...config });
-  };
+  static delete = (url: string, config: any) => axios.delete(url, { ...config });
 }
 
 export { APIClient };
