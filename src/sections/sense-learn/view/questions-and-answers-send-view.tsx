@@ -52,8 +52,8 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
     const res: any = await aiAnswer({ message: value, chatId })
     if (res.data.result) {
       const answer = res.data.result;
-      if (res.userId) {
-        setChatId(res.userId)
+      if (res.data.userId) {
+        setChatId(res.data.userId)
       }
       setQA([...QA, { type: 'question', text: value }, { type: 'answer', text: answer }]);
       setValue('');
