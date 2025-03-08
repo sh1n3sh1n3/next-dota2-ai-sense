@@ -50,8 +50,8 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
   const handleSend = async () => {
     if (!value) return;
     const res: any = await aiAnswer({ message: value, chatId })
-    if (res.result) {
-      const answer = res.result;
+    if (res.data.result) {
+      const answer = res.data.result;
       if (res.userId) {
         setChatId(res.userId)
       }
