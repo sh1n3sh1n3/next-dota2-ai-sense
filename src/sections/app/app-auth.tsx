@@ -47,6 +47,18 @@ export default function HomeAuth() {
     const params = new URLSearchParams({
       'openid.ns': 'http://specs.openid.net/auth/2.0',
       'openid.mode': 'checkid_setup',
+      'openid.return_to': 'https://next-dota2-ai-sense.vercel.app/auth/login',
+      'openid.realm': 'https://next-dota2-ai-sense.vercel.app/',
+      'openid.identity': 'http://specs.openid.net/auth/2.0/identifier_select',
+      'openid.claimed_id': 'http://specs.openid.net/auth/2.0/identifier_select',
+    });
+    window.location.href = `https://steamcommunity.com/openid/login?${params.toString()}`;
+  }
+
+  const SignUp = () => {
+    const params = new URLSearchParams({
+      'openid.ns': 'http://specs.openid.net/auth/2.0',
+      'openid.mode': 'checkid_setup',
       'openid.return_to': 'https://next-dota2-ai-sense.vercel.app/auth/register',
       'openid.realm': 'https://next-dota2-ai-sense.vercel.app/',
       'openid.identity': 'http://specs.openid.net/auth/2.0/identifier_select',
@@ -145,8 +157,7 @@ export default function HomeAuth() {
                 <Stack spacing={1.5} sx={{ width: 1 }}>
                   <Button
                     fullWidth
-                    component={RouterLink}
-                    href={paths.auth.steam.register}
+                    onClick={SignUp}
                     color="primary"
                     size="large"
                     variant="contained"

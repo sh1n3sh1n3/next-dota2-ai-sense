@@ -15,7 +15,6 @@ import { ActionMapType, AuthStateType, AuthUserType } from '../../types';
 // Customer will need to do some extra handling yourself if you want to extend the logic and other features...
 
 // ----------------------------------------------------------------------
-console.log("env", process.env.NEXT_PUBLIC_API_URL)
 axios.defaults.baseURL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
 enum Types {

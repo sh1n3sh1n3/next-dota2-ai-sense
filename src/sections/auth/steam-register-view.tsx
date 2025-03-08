@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 // @mui
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -7,6 +8,7 @@ import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { alpha, styled } from '@mui/material/styles';
+import LoadingButton from '@mui/lab/LoadingButton';
 // routes
 import { useRouter } from 'src/routes/hooks';
 // config
@@ -15,8 +17,6 @@ import { PATH_AFTER_LOGIN } from 'src/config-global';
 import { HEADER } from 'src/layouts/config-layout';
 // hooks
 import { useAuthContext } from 'src/auth/hooks';
-import { useState } from 'react';
-import LoadingButton from '@mui/lab/LoadingButton';
 
 // ----------------------------------------------------------------------
 
@@ -42,7 +42,6 @@ export default function SteamRegisterView() {
       const claimedId = params.get('openid.claimed_id');
       if (claimedId) {
         const steamid = claimedId.split('/').pop();
-        console.log("steamId", steamid);
         setIsSubmitting(true);
         await login(steamid);
 
@@ -82,8 +81,8 @@ export default function SteamRegisterView() {
             }}
           >
             <Stack spacing={5} alignItems="center" justifyContent="center">
-              <Typography variant="h3" sx={{ textAlign: 'center' }}>
-                Sign - up with yor Steam
+              <Typography variant="h3" sx={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
+                Sign - up with your Steam
               </Typography>
 
               <Typography variant="body1" sx={{ textAlign: 'left', color: 'text.secondary' }}>

@@ -42,7 +42,6 @@ export default function SteamLoginView() {
       const claimedId = params.get('openid.claimed_id');
       if (claimedId) {
         const steamid = claimedId.split('/').pop();
-        console.log("steamId", steamid);
         setIsSubmitting(true);
         await login(steamid);
 
