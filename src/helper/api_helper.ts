@@ -1,8 +1,25 @@
 import axios from 'axios';
+import { jwtDecode } from 'src/auth/context/steam/utils';
 
 axios.defaults.baseURL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+axios.interceptors.request.use(
+  async (config) => {
+    const eToken = sessionStorage.getItem('token');
+
+    if (eToken) {
+      const token = jwtDecode(eToken);
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 axios.interceptors.response.use(
   async (response) => {
@@ -18,7 +35,7 @@ axios.interceptors.response.use(
   async (error) => {
     const { response } = error;
     if (response && response.status === 401) {
-      localStorage.removeItem('token');
+      // sessionStorage.removeItem('token');
     }
 
     return Promise.reject(response || error); // Ensure rejection always has a value
