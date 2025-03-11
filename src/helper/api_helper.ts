@@ -5,18 +5,19 @@ axios.defaults.baseURL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-axios.interceptors.request.use(
-  async (config) => {
-    const eToken = sessionStorage.getItem('accessToken');
+// axios.interceptors.request.use(
+//   async (config) => {
+//     const eToken = sessionStorage.getItem('accessToken');
 
-    if (eToken) {
-      config.headers.Authorization = `Bearer ${jwtDecode(eToken)}`;
-    }
+//     if (eToken) {
+//       config.headers.Authorization = `Bearer ${eToken}`;
+//       console.log('eToken', config.headers.Authorization);
+//     }
 
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+//     return config;
+//   },
+//   (error) => Promise.reject(error)
+// );
 
 axios.interceptors.response.use(
   async (response) => {

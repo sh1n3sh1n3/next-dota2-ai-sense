@@ -55,13 +55,17 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
     setQA(prevQA => [...prevQA, { type: 'question', text: value }]);
     setValue(''); // Clear input after sending
     try {
-      const res: any = await aiAnswer({ message: value, chatId });
+      const storedPlayer = localStorage.getItem("user");
+      if (storedPlayer) {
+        const { steamid } = JSON.parse(storedPlayer);
+        const res: any = await aiAnswer({ message: value, chatId, steamid });
 
-      if (res?.data?.result) {
-        setQA(prevQA => [...prevQA, { type: 'answer', text: res.data.result }]);
+        if (res?.data?.result) {
+          setQA(prevQA => [...prevQA, { type: 'answer', text: res.data.result }]);
 
-        if (res?.data?.userId) {
-          setChatId(res.data.userId); // Ensure the chat ID is updated if present
+          if (res?.data?.userId) {
+            setChatId(res.data.userId); // Ensure the chat ID is updated if present
+          }
         }
       }
     } catch (error) {
