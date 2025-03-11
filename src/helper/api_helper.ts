@@ -10,15 +10,12 @@ axios.interceptors.request.use(
     const eToken = sessionStorage.getItem('token');
 
     if (eToken) {
-      const token = jwtDecode(eToken);
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${jwtDecode(eToken)}`;
     }
 
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 axios.interceptors.response.use(
