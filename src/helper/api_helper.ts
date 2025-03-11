@@ -7,7 +7,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 axios.interceptors.request.use(
   async (config) => {
-    const eToken = sessionStorage.getItem('token');
+    const eToken = sessionStorage.getItem('accessToken');
 
     if (eToken) {
       config.headers.Authorization = `Bearer ${jwtDecode(eToken)}`;
