@@ -50,11 +50,11 @@ export const tokenExpired = (exp: number) => {
   clearTimeout(expiredTimer);
 
   expiredTimer = setTimeout(() => {
-    alert('Token expired');
+    // alert('Token expired');
 
     sessionStorage.removeItem('accessToken');
 
-    window.location.href = paths.auth.steam.login;
+    window.location.href = paths.root;
   }, timeLeft);
 };
 

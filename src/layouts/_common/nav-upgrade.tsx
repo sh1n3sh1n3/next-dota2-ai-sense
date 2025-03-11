@@ -45,7 +45,7 @@ export default function NavUpgrade({ onOpen }: Props) {
           <Stack spacing={1} direction="row" alignItems="center">
             <Avatar src={user?.avatar} />
             <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-              {user?.realname}
+              {user?.personaname}
             </Typography>
           </Stack>
           <IconButton

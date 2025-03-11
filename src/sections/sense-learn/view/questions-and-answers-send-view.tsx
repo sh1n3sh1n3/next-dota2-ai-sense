@@ -9,6 +9,7 @@ import { _questions, } from 'src/_mock';
 // components
 import AppHeader from 'src/components/app-header';
 import { aiAnswer } from 'src/helper/api_steam_helper';
+import { useSnackbar } from 'src/components/snackbar';
 //
 import { MatchBox, MessageBox, DetaultQuestionBox } from '../components';
 
@@ -24,7 +25,7 @@ type chatType = {
 }
 
 export default function QuestionsAndAnswersSendView({ id }: Props) {
-
+  const { enqueueSnackbar } = useSnackbar();
   const [value, setValue] = useState('');
   const [chatId, setChatId] = useState<string>();
   const [QA, setQA] = useState<chatType[]>([]);
@@ -48,17 +49,29 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
   };
 
   const handleSend = async () => {
-    if (!value) return;
-    const res: any = await aiAnswer({ message: value, chatId })
-    if (res.data.result) {
-      const answer = res.data.result;
-      if (res.data.userId) {
-        setChatId(res.data.userId)
+    if (!value.trim()) return; // Prevent sending empty messages
+
+    // Append the new question to the conversation
+    setQA(prevQA => [...prevQA, { type: 'question', text: value }]);
+    setValue(''); // Clear input after sending
+    try {
+      const res: any = await aiAnswer({ message: value, chatId });
+
+      if (res?.data?.result) {
+        setQA(prevQA => [...prevQA, { type: 'answer', text: res.data.result }]);
+
+        if (res?.data?.userId) {
+          setChatId(res.data.userId); // Ensure the chat ID is updated if present
+        }
       }
-      setQA([...QA, { type: 'question', text: value }, { type: 'answer', text: answer }]);
-      setValue('');
+    } catch (error) {
+      console.error("Error fetching AI response:", error);
+      enqueueSnackbar('Server error!', { variant: 'error' });
+    } finally {
+      setValue(''); // Clear input after sending
     }
   };
+
 
   return (
     <Container maxWidth="lg">
