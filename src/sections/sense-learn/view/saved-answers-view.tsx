@@ -59,7 +59,7 @@ export default function SavedAnswersView() {
         gridTemplateColumns={{ xs: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
         sx={{ p: 2 }}
       >
-        {savedQA.map((item: any, index: any) => (
+        {savedQA?.map((item: any, index: any) => (
           <QuestionBox type="answer" text={item.messages[0].text} onClick={() => handleClick(`${index}`)} key={index} />
         ))}
       </Box>
