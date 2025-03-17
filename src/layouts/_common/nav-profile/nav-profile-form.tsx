@@ -45,7 +45,7 @@ function NavProfileForm({ onClose }: Props) {
 
   const defaultValues = useMemo(
     () => ({
-      name: user?.name || '',
+      name: user?.personaname || '',
       email: user?.email || '',
       country: user?.country || '',
     }),
@@ -62,6 +62,16 @@ function NavProfileForm({ onClose }: Props) {
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
+
+  useEffect(() => {
+    if (user) {
+      reset({
+        name: user?.personaname || '',
+        email: user?.email || '',
+        country: countries.find((item) => item.code === user.loccountrycode)?.label || '',
+      });
+    }
+  }, [user, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -106,7 +116,7 @@ function NavProfileForm({ onClose }: Props) {
               </Box>
             </Stack>
 
-            <RHFTextField fullWidth name="name" label="Steam nick name <read only field>" />
+            <RHFTextField fullWidth name="name" label="Steam nick name" readOnly />
             <RHFTextField name="email" label="Email" />
 
             <RHFAutocomplete

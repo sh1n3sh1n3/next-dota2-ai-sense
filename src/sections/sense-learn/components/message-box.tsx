@@ -37,12 +37,12 @@ export default function MessageBox({ onSend, ...other }: MessageBoxProps) {
       InputProps={{
         endAdornment: (
           <Stack spacing="1" direction="row">
-            <InputAdornment position="end">
+            {/* <InputAdornment position="end">
               <SvgColor
                 src="/assets/images/microphone.svg"
                 sx={{ width: 24, height: 24, color: 'text.disabled' }}
               />
-            </InputAdornment>
+            </InputAdornment> */}
             <InputAdornment position="end">
               <IconButton onClick={onSend}>
                 <SvgColor src="/assets/images/send.svg" sx={{ width: 24, height: 24 }} />

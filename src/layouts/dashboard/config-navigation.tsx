@@ -62,7 +62,7 @@ export function useNavData() {
 
           {
             title: t('Saved'),
-            path: paths.dashboard.senseLearn.savedAnswers,
+            path: paths.dashboard.senseLearn.savedAnswers.root,
             icon: ICONS.film,
           },
         ],

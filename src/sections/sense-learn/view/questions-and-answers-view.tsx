@@ -27,7 +27,7 @@ export default function QuestionsAndAnswersView() {
   return (
     <Container maxWidth="xl">
       <AppTitle title="Welcome to Sense Learn" />
-      {!user?.subscription && <UpgradeBox sx={{}} />}
+      {user?.subscription === "free" && <UpgradeBox sx={{}} />}
       <Box
         gap={2}
         display="grid"
@@ -38,7 +38,7 @@ export default function QuestionsAndAnswersView() {
           <QuestionBox
             type="question"
             text={question.text}
-            onClick={() => handleClick(question.id)}
+            onClick={() => handleClick(`${index}`)}
           />
         ))}
       </Box>

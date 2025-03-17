@@ -3,12 +3,12 @@
 import { useEffect, useRef, useState } from 'react';
 // @mui
 import Container from '@mui/material/Container';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Skeleton, Stack, Typography } from '@mui/material';
 // _mock
 import { _questions, } from 'src/_mock';
 // components
 import AppHeader from 'src/components/app-header';
-import { aiAnswer } from 'src/helper/api_steam_helper';
+import { aiAnswer, saveQA } from 'src/helper/api_steam_helper';
 import { useSnackbar } from 'src/components/snackbar';
 //
 import { MatchBox, MessageBox, DetaultQuestionBox } from '../components';
@@ -26,12 +26,13 @@ type chatType = {
 
 export default function QuestionsAndAnswersSendView({ id }: Props) {
   const { enqueueSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState(false);
   const [value, setValue] = useState('');
   const [chatId, setChatId] = useState<string>();
   const [QA, setQA] = useState<chatType[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const defaultQuestion = _questions.find((question) => question.id === id);
+  const defaultQuestion = _questions[Number(id)];
 
 
   // ✅ Scroll down function
@@ -50,7 +51,7 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
 
   const handleSend = async () => {
     if (!value.trim()) return; // Prevent sending empty messages
-
+    setLoading(true); // Start loading
     // Append the new question to the conversation
     setQA(prevQA => [...prevQA, { type: 'question', text: value }]);
     setValue(''); // Clear input after sending
@@ -58,7 +59,12 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
       const storedPlayer = localStorage.getItem("user");
       if (storedPlayer) {
         const { steamid } = JSON.parse(storedPlayer);
-        const res: any = await aiAnswer({ message: value, chatId, steamid });
+        const payload = chatId
+          ? { message: value, chatId, steamid }
+          : { message: value, chatId, steamid, defaultQuestion: defaultQuestion.text };
+
+        const res: any = await aiAnswer(payload);
+
 
         if (res?.data?.result) {
           setQA(prevQA => [...prevQA, { type: 'answer', text: res.data.result }]);
@@ -72,9 +78,25 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
       console.error("Error fetching AI response:", error);
       enqueueSnackbar('Server error!', { variant: 'error' });
     } finally {
-      setValue(''); // Clear input after sending
+      setLoading(false); // Stop loading after response
     }
   };
+
+  const handleSaveAnswer = async (questionNumber: number) => {
+    const storedPlayer = localStorage.getItem("user");
+    if (storedPlayer) {
+      const { steamid } = JSON.parse(storedPlayer);
+      const messages = [QA[questionNumber - 1], QA[questionNumber]];
+      const data = { messages, steamid };
+      try {
+        await saveQA({ data });
+        enqueueSnackbar('Successfully saved answer.');
+      } catch (error) {
+        console.error("error ", error)
+        enqueueSnackbar('Server error!', { variant: 'error' });
+      }
+    }
+  }
 
 
   return (
@@ -96,17 +118,17 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
           }}
         >
           <Stack spacing={1} direction="column" alignContent="flex-start" sx={{ width: 1 }}>
-            <DetaultQuestionBox>
+            <DetaultQuestionBox action>
               <Typography variant="h6" sx={{ fontWeight: 400 }}>
                 {defaultQuestion?.text}
               </Typography>
             </DetaultQuestionBox>
           </Stack>
 
-          {QA.map((item) => (
+          {QA.map((item, index) => (
             <>
               {item.type === 'answer' ? (
-                <DetaultQuestionBox>
+                <DetaultQuestionBox handleSaveAnswer={() => handleSaveAnswer(index)}>
                   <Typography variant="inherit" sx={{ fontWeight: 400 }} dangerouslySetInnerHTML={{ __html: item.text.replace(/[*#]/g, "").replace(/\n/g, "<br />") }} />
 
                 </DetaultQuestionBox>
@@ -123,7 +145,16 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
           <Box ref={messagesEndRef} />
         </Stack>
 
-        <MessageBox value={value} onChange={handleChange} onSend={handleSend} sx={{ py: 5 }} />
+        {loading ? (
+          <Skeleton variant="rectangular" width="100%" height={50} sx={{
+            mb: 5,
+            p: 3,
+            borderRadius: "8px"
+          }} />
+        ) : (
+          <MessageBox value={value} onChange={handleChange} onSend={handleSend} sx={{ py: 5 }} />
+        )}
+
       </Stack>
     </Container>
   );

@@ -25,10 +25,13 @@ export const paths = {
     senseLearn: {
       howItWorks: `${ROOTS.DASHBOARD}/sense-learn/how-it-works`,
       howToWorks: `${ROOTS.DASHBOARD}/sense-learn/how-to-works`,
-      savedAnswers: `${ROOTS.DASHBOARD}/sense-learn/saved-answers`,
       questionsAndAnswers: {
         root: `${ROOTS.DASHBOARD}/sense-learn/questions-and-answers`,
         send: (id: string) => `${ROOTS.DASHBOARD}/sense-learn/questions-and-answers/${id}/send`,
+      },
+      savedAnswers: {
+        root: `${ROOTS.DASHBOARD}/sense-learn/saved-answers`,
+        send: (id: string) => `${ROOTS.DASHBOARD}/sense-learn/saved-answers/${id}/send`,
       },
     },
     senseRealTime: {

@@ -7,7 +7,7 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { alpha, styled } from '@mui/material/styles';
 // routes
-import { paths } from 'src/routes/paths';
+// import { paths } from 'src/routes/paths';
 // hooks
 import { useResponsive } from 'src/hooks/use-responsive';
 // layouts
@@ -16,7 +16,7 @@ import { HEADER } from 'src/layouts/config-layout';
 import Image from 'src/components/image';
 import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color';
-import { RouterLink } from 'src/routes/components';
+// import { RouterLink } from 'src/routes/components';
 import {
   Box1,
   Box2,
@@ -47,8 +47,8 @@ export default function HomeAuth() {
     const params = new URLSearchParams({
       'openid.ns': 'http://specs.openid.net/auth/2.0',
       'openid.mode': 'checkid_setup',
-      'openid.return_to': 'https://next-dota2-ai-sense.vercel.app/auth/login',
-      'openid.realm': 'https://next-dota2-ai-sense.vercel.app/',
+      'openid.return_to': 'http://localhost:8081/auth/login',
+      'openid.realm': 'http://localhost:8081/',
       'openid.identity': 'http://specs.openid.net/auth/2.0/identifier_select',
       'openid.claimed_id': 'http://specs.openid.net/auth/2.0/identifier_select',
     });
@@ -59,8 +59,8 @@ export default function HomeAuth() {
     const params = new URLSearchParams({
       'openid.ns': 'http://specs.openid.net/auth/2.0',
       'openid.mode': 'checkid_setup',
-      'openid.return_to': 'https://next-dota2-ai-sense.vercel.app/auth/register',
-      'openid.realm': 'https://next-dota2-ai-sense.vercel.app/',
+      'openid.return_to': 'http://localhost:8081/auth/register',
+      'openid.realm': 'http://localhost:8081/',
       'openid.identity': 'http://specs.openid.net/auth/2.0/identifier_select',
       'openid.claimed_id': 'http://specs.openid.net/auth/2.0/identifier_select',
     });
