@@ -59,6 +59,7 @@ export type SteamContextType = CanRemove & {
   unauthenticated: boolean;
   login: (steamid: string) => Promise<void>;
   register: (steamid: string) => Promise<void>;
+  initialize: () => Promise<void>;
   logout: () => Promise<void>;
 };
 

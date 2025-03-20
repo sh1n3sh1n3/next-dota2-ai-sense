@@ -139,12 +139,12 @@ export function AuthProvider({ children }: Props) {
     const { accessToken, user } = res.data;
     localStorage.setItem('user', JSON.stringify(user))
     setSession(accessToken);
-
+    console.log("user", user._doc)
     dispatch({
       type: Types.LOGIN,
       payload: {
         user: {
-          ...user,
+          ...user._doc,
           accessToken,
         },
       },
@@ -166,7 +166,7 @@ export function AuthProvider({ children }: Props) {
         type: Types.REGISTER,
         payload: {
           user: {
-            ...user,
+            ...user._doc,
             accessToken,
           },
         },
@@ -200,8 +200,9 @@ export function AuthProvider({ children }: Props) {
       login,
       register,
       logout,
+      initialize,
     }),
-    [login, logout, register, state.user, status]
+    [login, logout, register, initialize, state.user, status]
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;

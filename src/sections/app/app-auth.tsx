@@ -47,8 +47,8 @@ export default function HomeAuth() {
     const params = new URLSearchParams({
       'openid.ns': 'http://specs.openid.net/auth/2.0',
       'openid.mode': 'checkid_setup',
-      'openid.return_to': 'https://next-dota2-ai-sense.vercel.app/auth/login',
-      'openid.realm': 'https://next-dota2-ai-sense.vercel.app/',
+      'openid.return_to': `${process.env.NEXT_PUBLIC_ROOT}/auth/login`,
+      'openid.realm': `${process.env.NEXT_PUBLIC_ROOT}`,
       'openid.identity': 'http://specs.openid.net/auth/2.0/identifier_select',
       'openid.claimed_id': 'http://specs.openid.net/auth/2.0/identifier_select',
     });
@@ -59,8 +59,8 @@ export default function HomeAuth() {
     const params = new URLSearchParams({
       'openid.ns': 'http://specs.openid.net/auth/2.0',
       'openid.mode': 'checkid_setup',
-      'openid.return_to': 'https://next-dota2-ai-sense.vercel.app/auth/register',
-      'openid.realm': 'https://next-dota2-ai-sense.vercel.app/',
+      'openid.return_to': `${process.env.NEXT_PUBLIC_ROOT}/auth/register`,
+      'openid.realm': `${process.env.NEXT_PUBLIC_ROOT}`,
       'openid.identity': 'http://specs.openid.net/auth/2.0/identifier_select',
       'openid.claimed_id': 'http://specs.openid.net/auth/2.0/identifier_select',
     });

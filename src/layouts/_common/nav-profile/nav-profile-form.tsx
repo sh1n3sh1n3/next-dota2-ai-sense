@@ -11,6 +11,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 // assets
 import { countries } from 'src/assets/data';
+
+import { useAuthUser } from 'src/hooks/use-auth';
+import { updateProfile } from 'src/helper/api_auth_helper';
+import { useAuthContext } from 'src/auth/hooks';
 // components
 import Image from 'src/components/image';
 import Iconify from 'src/components/iconify';
@@ -25,12 +29,14 @@ type Props = {
 };
 
 function NavProfileForm({ onClose }: Props) {
-  const [user, setUser] = useState<any>("")
+  const { user } = useAuthUser();
+  const { initialize, login } = useAuthContext();
+  const [player, setPlayer] = useState<any>("")
   useEffect(() => {
     const storedPlayer = localStorage.getItem("user");
     if (storedPlayer) {
-      const player = JSON.parse(storedPlayer);
-      setUser(player)
+      const result = JSON.parse(storedPlayer);
+      setPlayer(result)
     }
   }, [])
 
@@ -45,11 +51,11 @@ function NavProfileForm({ onClose }: Props) {
 
   const defaultValues = useMemo(
     () => ({
-      name: user?.personaname || '',
+      name: player?.personaname || '',
       email: user?.email || '',
-      country: user?.country || '',
+      country: player?.country || '',
     }),
-    [user]
+    [player, user]
   );
 
   const methods = useForm({
@@ -64,22 +70,26 @@ function NavProfileForm({ onClose }: Props) {
   } = methods;
 
   useEffect(() => {
-    if (user) {
+    if (player) {
       reset({
-        name: user?.personaname || '',
+        name: player?.personaname || '',
         email: user?.email || '',
-        country: countries.find((item) => item.code === user.loccountrycode)?.label || '',
+        country: countries.find((item) => item.code === player.loccountrycode)?.label || '',
       });
     }
-  }, [user, reset]);
+  }, [player, user, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      onClose();
-      enqueueSnackbar('Update success!');
-      console.info('DATA', data);
+      const steamid = player.steamid;
+      if (steamid) {
+        await updateProfile({ email: data.email, steamid })
+        reset();
+        enqueueSnackbar('Update success!');
+        // await initialize();
+        await login(steamid);
+        onClose();
+      }
     } catch (error) {
       console.error(error);
     }
@@ -112,7 +122,7 @@ function NavProfileForm({ onClose }: Props) {
                   bgcolor: 'secondary.main',
                 }}
               >
-                <Image src={user?.avatarfull} sx={{ width: 1, height: 1 }} />
+                <Image src={player?.avatarfull} sx={{ width: 1, height: 1 }} />
               </Box>
             </Stack>
 
@@ -146,6 +156,7 @@ function NavProfileForm({ onClose }: Props) {
                   </li>
                 );
               }}
+              disabled
             />
           </Box>
         </Stack>

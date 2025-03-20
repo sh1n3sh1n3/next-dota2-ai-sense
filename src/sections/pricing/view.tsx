@@ -1,5 +1,7 @@
 'use client';
 
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 // @mui
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -14,6 +16,7 @@ import AppTitle from 'src/components/app-title';
 import PricingCard from './pricing-card';
 
 // ----------------------------------------------------------------------
+const stripePromise = loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY}`);
 
 export default function PricingView() {
   const { user } = useAuthUser();
@@ -31,11 +34,16 @@ export default function PricingView() {
         gridTemplateColumns={{ xs: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }}
       >
         {_userPlans.map((plan, index) => (
-          <PricingCard
-            key={plan.subscription}
-            plan={plan}
-            active={plan.subscription === user?.subscription}
-          />
+          <Elements stripe={stripePromise}>
+            <PricingCard
+              key={plan.subscription}
+              plan={plan}
+              active={plan.subscription.toLowerCase() === user?.subscription?.toLowerCase()}
+              currentPlan={user?.subscription}
+            // active={plan.subscription.toLowerCase() === "learn"}
+            // currentPlan="learn"
+            />
+          </Elements>
         ))}
       </Box>
     </Container>

@@ -1,12 +1,21 @@
+import React, { useState } from "react";
+import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+
 // @mui
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import { CardProps } from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
+import { Box, CircularProgress, TextField, Dialog } from "@mui/material";
+// hooks
+import { cancelPlan, purchasePlan } from "src/helper/api_plan_helper";
 // components
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
+import { ConfirmDialog } from "src/components/custom-dialog";
+import { useSnackbar } from 'src/components/snackbar';
+import { useAuthContext } from "src/auth/hooks";
 
 // ----------------------------------------------------------------------
 
@@ -18,19 +27,127 @@ type Props = CardProps & {
     caption: string;
     period: string;
     description: string;
-    labelAction: string;
+    // labelAction: string;
     lists: string[];
   };
+  currentPlan?: string;
 };
 
-export default function PricingCard({ plan, active, sx, ...other }: Props) {
-  const { subscription, price, caption, period, description, lists, labelAction } = plan;
-
+export default function PricingCard({ plan, active, currentPlan, sx, ...other }: Props) {
+  const { subscription, price, caption, period, description, lists } = plan;
+  const { initialize, login } = useAuthContext();
+  const storedPlayer = localStorage.getItem("user");
+  const steamid = storedPlayer ? JSON.parse(storedPlayer)?.steamid : null; // Ensure steamid is accessible
+  const { enqueueSnackbar } = useSnackbar();
+  const stripe = useStripe();
+  const elements = useElements();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [open, setOpen] = useState<boolean>(false)
+  const [cancelOpen, setCancelOpen] = useState<boolean>(false)
+  const onClose = () => {
+    setOpen(false)
+  }
   const free = subscription === 'Free';
 
   const learn = subscription === 'Learn';
 
   const learn_realtime = subscription === 'Learn Real Time';
+
+  let labelAction = "Downgrade";
+
+  if (active) {
+    labelAction = "Your current Plan";
+  } else if (currentPlan?.toLowerCase() === "free") {
+    labelAction = "Upgrade";
+  } else if (currentPlan?.toLowerCase() === "learn") {
+    labelAction = free ? "Downgrade" : "Upgrade";
+  }
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setLoading(true);
+
+    if (!stripe || !elements) {
+      enqueueSnackbar("Stripe is not initialized.", { variant: "error" });
+      setLoading(false);
+      return;
+    }
+
+    if (!steamid) {
+      return;
+    }
+
+    const cardElement = elements.getElement(CardElement);
+    if (!cardElement) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Step 1: Create Payment Method
+      const { paymentMethod, error: pmError } = await stripe.createPaymentMethod({
+        type: "card",
+        card: cardElement,
+      });
+
+      if (pmError) throw new Error(pmError.message);
+
+      const data = {
+        priceId: process.env.NEXT_PUBLIC_PRICE_ID,
+        paymentMethodId: paymentMethod.id,
+        email: email || null, // ✅ Send email only if customerId is unknown
+        steamid
+      }
+      const response: any = await purchasePlan(data)
+
+      const { clientSecret, customerId, message } = response.data;
+      if (!clientSecret && customerId) throw new Error("Failed to create or update subscription");
+
+
+      // Step 3: Confirm payment
+
+      if (customerId) {
+        const result = await stripe.confirmCardPayment(clientSecret);
+        if (result.error) throw new Error(result.error.message);
+      }
+      await login(steamid);
+      enqueueSnackbar("Payment successful!");
+      setEmail("")
+      setOpen(false)
+      // router;
+    } catch (err: any) {
+      enqueueSnackbar("Payment failed.", { variant: "error" });
+    } finally {
+      setLoading(false);
+    }
+
+
+  };
+
+  const handleSubscription = () => {
+    if (free) {
+      setCancelOpen(true)
+    }
+    else if (!learn_realtime) {
+      setOpen(true)
+    }
+  }
+
+  const handleCancelPlan = async () => {
+    if (steamid) {
+      try {
+        await cancelPlan({ steamid })
+        enqueueSnackbar("Update success!");
+        // await initialize();
+        await login(steamid);
+      } catch (error) {
+        enqueueSnackbar("No active subscription found!", { variant: "error" });
+      }
+      setCancelOpen(false)
+    }
+  }
+
 
   const renderList = (
     <Stack spacing={1}>
@@ -58,12 +175,12 @@ export default function PricingCard({ plan, active, sx, ...other }: Props) {
     <Stack
       sx={{
         p: 3,
-        ...(learn && {
+        ...(active && {
           zIndex: 100,
           borderRadius: '6px',
           boxShadow: '0px 4px 9px #171a1f1C, 0px 0px 2px #171a1f1F',
         }),
-        ...((free || learn_realtime) && {
+        ...((!active) && {
           backgroundColor: '#F8F9FA',
           borderRadius: '6px 0px 0px 6px',
           boxShadow: '0px 0px 1px #171a1f12, 0px 0px 2px #171a1f1F',
@@ -136,12 +253,61 @@ export default function PricingCard({ plan, active, sx, ...other }: Props) {
         fullWidth
         size="large"
         variant={learn ? 'contained' : 'outlined'}
-        disabled={active}
         color={learn ? 'primary' : 'inherit'}
         sx={{ mt: 4 }}
+        disabled={active}
+        onClick={() => handleSubscription()}
       >
         <Typography variant="body1">{labelAction}</Typography>
       </Button>
+
+      <Dialog
+        fullWidth
+        maxWidth={false}
+        open={open}
+        onClose={onClose}
+        PaperProps={{
+          sx: { maxWidth: 480 },
+        }}
+      >
+        <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 2, margin: "auto", padding: 3, borderRadius: 2, boxShadow: 3 }}>
+          {/* <Typography variant="h6" align="center"></Typography> */}
+
+          <TextField
+            id="email"
+            label="Email Address"
+            variant="outlined"
+            fullWidth
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          <CardElement />
+          <Button type="submit"
+
+            size="large"
+            variant='outlined'
+            color='primary'
+            sx={{ mt: 4 }}
+            disabled={!stripe || loading}>
+            {loading ? <CircularProgress size={24} /> : "Subscribe"}
+          </Button>
+        </Box>
+      </Dialog>
+      <ConfirmDialog
+        title="title"
+        content={`Do you want to cancel your current ${currentPlan} Plan?`}
+        action={
+          <Button variant="outlined" color="inherit" onClick={handleCancelPlan}>
+            Yes
+          </Button>
+        }
+        open={cancelOpen}
+        onClose={() => { setCancelOpen(false) }}
+      />
+
+      {/* </ConfirmDialog> */}
     </Stack>
   );
 }

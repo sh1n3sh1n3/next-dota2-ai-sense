@@ -8,10 +8,14 @@ import { Stack, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
+
+import { useAuthUser } from 'src/hooks/use-auth';
+import { useAuthContext } from 'src/auth/hooks';
 // components
 import Image from 'src/components/image';
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import { cancelPlan } from 'src/helper/api_plan_helper';
 //
 
 // ----------------------------------------------------------------------
@@ -27,13 +31,15 @@ type Props = {
 };
 
 function NavPlanForm({ onClose }: Props) {
+  const { user } = useAuthUser();
+  const { initialize, login } = useAuthContext();
   const { enqueueSnackbar } = useSnackbar();
-  const [user, setUser] = useState<any>("")
+  const [player, setPlayer] = useState<any>("")
   useEffect(() => {
     const storedPlayer = localStorage.getItem("user");
     if (storedPlayer) {
-      const player = JSON.parse(storedPlayer);
-      setUser(player)
+      const result = JSON.parse(storedPlayer);
+      setPlayer(result)
     }
   }, [])
 
@@ -46,12 +52,13 @@ function NavPlanForm({ onClose }: Props) {
   const defaultValues = useMemo(
     () => ({
       due: currentPlan?.due || '',
-      billing: currentPlan?.billing || '',
-      plan: currentPlan?.plan || '',
+      billing: user?.subscription?.toLowerCase() === "free" ? "FREE" : "PRICE($19)",
+      plan: user?.subscription || '',
     }),
-    []
+    [user]
   );
 
+  const active = user?.subscription?.toLowerCase() === "free";
   const methods = useForm({
     resolver: yupResolver(NewUserSchema),
     defaultValues,
@@ -65,11 +72,15 @@ function NavPlanForm({ onClose }: Props) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      onClose();
-      enqueueSnackbar('Update success!');
-      console.info('DATA', data);
+      const steamid = player.steamid;
+      if (steamid) {
+        await cancelPlan({ steamid })
+        reset();
+        enqueueSnackbar('Update success!');
+        // await initialize();
+        await login(steamid);
+        onClose();
+      }
     } catch (error) {
       console.error(error);
     }
@@ -102,13 +113,13 @@ function NavPlanForm({ onClose }: Props) {
                   bgcolor: 'secondary.main',
                 }}
               >
-                <Image src={user.avatarfull} sx={{ width: 1, height: 1 }} />
+                <Image src={player.avatarfull} sx={{ width: 1, height: 1 }} />
               </Box>
             </Stack>
 
-            <RHFTextField name="due" label="DotaSense member since" />
-            <RHFTextField name="billing" label="Billing" />
-            <RHFTextField name="plan" label="Plan" />
+            <RHFTextField name="due" label="DotaSense member since" readOnly />
+            <RHFTextField name="billing" label="Billing" readOnly />
+            <RHFTextField name="plan" label="Plan" readOnly />
           </Box>
         </Stack>
       </DialogContent>
@@ -120,7 +131,7 @@ function NavPlanForm({ onClose }: Props) {
           </Typography>
         </Button> */}
 
-        <LoadingButton type="submit" variant="contained" color="primary" loading={isSubmitting}>
+        <LoadingButton type="submit" variant="contained" color="primary" loading={isSubmitting} disabled={active}>
           <Typography variant="body2">Cancel my plan</Typography>
         </LoadingButton>
       </DialogActions>
