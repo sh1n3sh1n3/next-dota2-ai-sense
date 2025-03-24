@@ -59,7 +59,7 @@ function NavProfileForm({ onClose }: Props) {
   );
 
   const methods = useForm({
-    resolver: yupResolver(NewUserSchema),
+    // resolver: yupResolver(NewUserSchema),
     defaultValues,
   });
 

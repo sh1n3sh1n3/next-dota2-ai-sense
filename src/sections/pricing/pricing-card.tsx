@@ -296,7 +296,7 @@ export default function PricingCard({ plan, active, currentPlan, sx, ...other }:
         </Box>
       </Dialog>
       <ConfirmDialog
-        title="title"
+        title="Subscription"
         content={`Do you want to cancel your current ${currentPlan} Plan?`}
         action={
           <Button variant="outlined" color="inherit" onClick={handleCancelPlan}>

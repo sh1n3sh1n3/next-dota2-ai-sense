@@ -12,6 +12,7 @@ import { aiAnswer, saveQA } from 'src/helper/api_steam_helper';
 import { useSnackbar } from 'src/components/snackbar';
 //
 import { MatchBox, MessageBox, DetaultQuestionBox } from '../components';
+import { usePreQuestion } from 'src/store/qa.store';
 
 // ----------------------------------------------------------------------
 
@@ -26,13 +27,14 @@ type chatType = {
 
 export default function QuestionsAndAnswersSendView({ id }: Props) {
   const { enqueueSnackbar } = useSnackbar();
+  const preQuestions = usePreQuestion((state) => state.resData);
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState('');
   const [chatId, setChatId] = useState<string>();
   const [QA, setQA] = useState<chatType[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const defaultQuestion = _questions[Number(id)];
+  const defaultQuestion = preQuestions[Number(id)];
 
 
   // ✅ Scroll down function
@@ -75,8 +77,11 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
         }
       }
     } catch (error) {
+      if (error.status === 429) {
+        enqueueSnackbar('Monthly API limit reached!', { variant: 'error' });
+      }
+      else enqueueSnackbar('Server error!', { variant: 'error' });
       console.error("Error fetching AI response:", error);
-      enqueueSnackbar('Server error!', { variant: 'error' });
     } finally {
       setLoading(false); // Stop loading after response
     }
@@ -87,6 +92,22 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
     if (storedPlayer) {
       const { steamid } = JSON.parse(storedPlayer);
       const messages = [QA[questionNumber - 1], QA[questionNumber]];
+      const data = { messages, steamid };
+      try {
+        await saveQA({ data });
+        enqueueSnackbar('Successfully saved answer.');
+      } catch (error) {
+        console.error("error ", error)
+        enqueueSnackbar('Server error!', { variant: 'error' });
+      }
+    }
+  }
+
+  const handleSaveAction = async (questionNumber: number) => {
+    const storedPlayer = localStorage.getItem("user");
+    if (storedPlayer) {
+      const { steamid } = JSON.parse(storedPlayer);
+      const messages = QA[questionNumber - 1];
       const data = { messages, steamid };
       try {
         await saveQA({ data });
@@ -120,7 +141,7 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
           <Stack spacing={1} direction="column" alignContent="flex-start" sx={{ width: 1 }}>
             <DetaultQuestionBox action>
               <Typography variant="h6" sx={{ fontWeight: 400 }}>
-                {defaultQuestion?.text}
+                {defaultQuestion?.question}
               </Typography>
             </DetaultQuestionBox>
           </Stack>

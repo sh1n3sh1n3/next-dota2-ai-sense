@@ -15,3 +15,18 @@ export const useQAStore = create<QAState>()(
     { name: 'qa-storage' } // Persist in localStorage
   )
 );
+
+type QuestionState = {
+  resData: any;
+  saveQuestion: (data: any) => void;
+};
+
+export const usePreQuestion = create<QuestionState>()(
+  persist(
+    (set) => ({
+      resData: [],
+      saveQuestion: (data) => set({ resData: data }),
+    }),
+    { name: 'prequestion-storage' }
+  )
+);
