@@ -27,7 +27,7 @@ export default function PreConfiguredQuestion() {
         const fetchQuestions = async () => {
             try {
                 // await savePreQuestion({ data })
-                const res: any = await getPreQuestion();
+                const res: any = await getPreQuestion({});
                 if (res) {
                     saveQuestionRef.current(res.data.results); // ✅ Correctly update Zustand state
                 }
@@ -125,7 +125,7 @@ export default function PreConfiguredQuestion() {
                 </TableHead>
                 <TableBody>
                     {preQuestions && (
-                        preQuestions.map((item: QuestionType, index: number) =>
+                        preQuestions?.map((item: QuestionType, index: number) =>
                         (
                             <TableRow key={index}>
                                 <TableCell>{item.question}</TableCell>

@@ -15,7 +15,8 @@ export const saveActionLog = (data: any) =>
 export const savePreQuestion = (data: any) =>
   APIClient.create(`${url.AI_ANSWER}/save-prequestion`, data);
 
-export const getPreQuestion = () => APIClient.get(`${url.AI_ANSWER}/get-prequestion`, {});
+export const getPreQuestion = (data: any) =>
+  APIClient.create(`${url.AI_ANSWER}/get-prequestion`, { data });
 
 export const editPreQuestion = (data: any) =>
   APIClient.create(`${url.AI_ANSWER}/edit-prequestion`, data);

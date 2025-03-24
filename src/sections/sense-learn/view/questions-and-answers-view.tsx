@@ -41,8 +41,8 @@ export default function QuestionsAndAnswersView() {
         try {
           // await savePreQuestion({ data })
           const { steamid } = JSON.parse(storedPlayer);
-          const res: any = await getPreQuestion();
           const data = { steamid }
+          const res: any = await getPreQuestion({});
           const resData: any = await getLimitCount(data)
           if (resData) {
             setCount(resData.data.count)
@@ -65,14 +65,14 @@ export default function QuestionsAndAnswersView() {
   return (
     <Container maxWidth="xl">
       <AppTitle title="Welcome to Sense Learn" />
-      {user?.subscription.toLowerCase() === "free" && <UpgradeBox count={count} />}
+      {user?.subscription?.toLowerCase() === "free" && <UpgradeBox count={count} />}
       <Box
         gap={2}
         display="grid"
         gridTemplateColumns={{ xs: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
         sx={{ mt: 10 }}
       >
-        {preQuestions.map((item: any, index: number) => (
+        {preQuestions?.map((item: any, index: number) => (
           <QuestionBox
             type="question"
             text={item.question}
