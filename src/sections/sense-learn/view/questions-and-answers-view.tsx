@@ -57,7 +57,7 @@ export default function QuestionsAndAnswersView() {
     };
 
     fetchQuestions(); // ✅ Call the async function inside useEffect
-  }, [savedQuestion]); // ✅ Added dependencies
+  }, [savedQuestion, storedPlayer]); // ✅ Added dependencies
   const handleClick = (id: string) => {
     router.push(paths.dashboard.senseLearn.questionsAndAnswers.send(id));
   };
