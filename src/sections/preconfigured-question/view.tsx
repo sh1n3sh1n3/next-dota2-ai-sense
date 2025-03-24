@@ -36,7 +36,7 @@ export default function PreConfiguredQuestion() {
         };
 
         fetchQuestions(); // ✅ Call the async function inside useEffect
-    }, []); // ✅ Added dependencies
+    }, [savedQuestion]); // ✅ Added dependencies
 
     const [question, setQuestion] = useState<string>("");
     const [open, setOpen] = useState<boolean>(false);
@@ -49,9 +49,9 @@ export default function PreConfiguredQuestion() {
         setQuestion("")
     }
 
-    const handleEditPreQuestion = async (id: string, question: string) => {
+    const handleEditPreQuestion = async (id: string, questionText: string) => {
         try {
-            const data = { id, question }
+            const data = { id, question: questionText }
             const res = await editPreQuestion({ data });
             if (res) {
                 savedQuestion(res.data.results); // ✅ Correctly update Zustand state
@@ -75,9 +75,9 @@ export default function PreConfiguredQuestion() {
         }
     }
 
-    const handleSavePrequestion = async (question: string) => {
+    const handleSavePrequestion = async (questionText: string) => {
         try {
-            const data = { question };
+            const data = { question: questionText };
             const res = await savePreQuestion({ data });
             if (res) {
                 savedQuestion(res.data.results); // ✅ Correctly update Zustand state
@@ -88,17 +88,19 @@ export default function PreConfiguredQuestion() {
         }
     }
 
-    const setDefaultValue = (id: string, question: string) => {
-        setQuestionId(id)
-        setQuestion(question);
-    }
+    const setDefaultValue = (id: string, questionText: string) => {
+        setQuestionId(id);
+        setQuestion(questionText);
+    };
 
     const handleQUestion = () => {
+        setLoading(true);
         if (state) {
             handleEditPreQuestion(questionId, question)
         } else {
             handleSavePrequestion(question);
         }
+        setLoading(false);
     }
 
     return (
@@ -129,11 +131,11 @@ export default function PreConfiguredQuestion() {
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>
                                     <IconButton onClick={() => { setDefaultValue(item?.id, item?.question); setState(true); setOpen(true) }}>
-                                        <Iconify icon={'eva:edit-outline'} />
+                                        <Iconify icon='eva:edit-outline' />
                                     </IconButton>
 
                                     <IconButton onClick={() => { setConfirmOpen(true); setQuestionId(item.id) }}>
-                                        <Iconify icon={'eva:trash-outline'} />
+                                        <Iconify icon='eva:trash-outline' />
                                     </IconButton>
                                 </TableCell>
                             </TableRow>
@@ -169,9 +171,10 @@ export default function PreConfiguredQuestion() {
                     <Button
                         variant='outlined'
                         color='primary'
-                        onClick={() => handleQUestion()}
+                        onClick={handleQUestion}
                     >
-                        {loading ? <CircularProgress size={24} /> : state ? "Edit" : "Save"}
+                        {/* {loading ? <CircularProgress size={24} /> : state ? "Edit" : "Save"} */}
+                        {state ? "Edit" : "Save"}
                     </Button>
                     <Button variant="outlined" color="inherit" onClick={onClose}>
                         Cancel
@@ -180,7 +183,7 @@ export default function PreConfiguredQuestion() {
             </Dialog>
             <ConfirmDialog
                 title="title"
-                content={`Do you want to delete this message?`}
+                content='Do you want to delete this message?'
                 action={
                     <Button variant="outlined" color="inherit" onClick={() => handleDeletePreQuestion(questionId)}>
                         Yes

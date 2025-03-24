@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 // @mui
 import { alpha, useTheme } from '@mui/material/styles';
 import {
@@ -11,7 +11,11 @@ import {
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
-export default function UpgradeBox({ ...other }) {
+interface UpgradeBoxProps {
+  count: number
+}
+
+export default function UpgradeBox({ count }: UpgradeBoxProps) {
   const theme = useTheme();
 
   return (
@@ -23,11 +27,11 @@ export default function UpgradeBox({ ...other }) {
         p: 0.5,
         mt: { xs: 2, md: 0 },
         bgcolor: alpha(theme.palette.warning.main, 0.2),
-        ...other,
+        // ...other,
       }}
     >
       <Stack alignItems="center" justifyContent="center" sx={{ width: 1 }}>
-        <Typography variant="body2">You aready did 4/5 free chats available per day -</Typography>
+        <Typography variant="body2">You already did {count}/30 free chats available per month -</Typography>
       </Stack>
       <Box
         sx={{

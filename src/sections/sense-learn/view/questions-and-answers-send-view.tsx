@@ -1,18 +1,23 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+
 // @mui
 import Container from '@mui/material/Container';
 import { Box, Skeleton, Stack, Typography } from '@mui/material';
+
 // _mock
-import { _questions, } from 'src/_mock';
+import { _questions } from 'src/_mock';
+
 // components
 import AppHeader from 'src/components/app-header';
-import { aiAnswer, saveQA } from 'src/helper/api_steam_helper';
 import { useSnackbar } from 'src/components/snackbar';
-//
-import { MatchBox, MessageBox, DetaultQuestionBox } from '../components';
+import { aiAnswer, saveQA } from 'src/helper/api_steam_helper';
 import { usePreQuestion } from 'src/store/qa.store';
+
+// relative imports (last)
+import { MatchBox, MessageBox, DetaultQuestionBox } from '../components';
+
 
 // ----------------------------------------------------------------------
 
