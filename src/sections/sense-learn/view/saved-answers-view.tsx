@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 // @mui
 import Container from '@mui/material/Container';
 // _mock
@@ -29,26 +29,31 @@ export default function SavedAnswersView() {
   const handleClick = (id: string) => {
     router.push(paths.dashboard.senseLearn.savedAnswers.send(id));
   };
-  const storedPlayer = localStorage.getItem("user");
   const saveQAData = useQAStore((state) => state.saveQAData); // ✅ Extract Zustand function properly
+  const saveQADataRef = useRef(saveQAData);
   const savedQA = useQAStore((state) => state.resData);
   useEffect(() => {
     const fetchQA = async () => {
-      if (storedPlayer) {
-        const { steamid } = JSON.parse(storedPlayer);
-        try {
-          const res: any = await getQA({ steamid });
-          if (res) {
-            saveQAData(res.data.results); // ✅ Correctly update Zustand state
-          }
-        } catch (error) {
-          console.error("Error fetching QA:", error);
+      try {
+        const storedPlayer = localStorage.getItem("user");
+        if (!storedPlayer) return;
+
+        const parsed = JSON.parse(storedPlayer);
+        const steamid = parsed?.steamid;
+
+        if (!steamid) return;
+
+        const res: any = await getQA({ steamid });
+        if (res?.data?.results) {
+          saveQADataRef.current(res.data.results);
         }
+      } catch (error) {
+        console.error("Error fetching QA:", error);
       }
     };
 
-    fetchQA(); // ✅ Call the async function inside useEffect
-  }, [storedPlayer, saveQAData]); // ✅ Added dependencies
+    fetchQA();
+  }, []);
 
   return (
     <Container maxWidth="xl">

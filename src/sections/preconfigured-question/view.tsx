@@ -4,7 +4,7 @@
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
 import Container from '@mui/material/Container';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // components
 import AppTitle from 'src/components/app-title';
 import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -20,7 +20,8 @@ interface QuestionType {
 // ----------------------------------------------------------------------
 
 export default function PreConfiguredQuestion() {
-    const savedQuestion = usePreQuestion((state) => state.saveQuestion)
+    const savedQuestion = usePreQuestion((state) => state.saveQuestion);
+    const saveQuestionRef = useRef(savedQuestion);
     const preQuestions = usePreQuestion((state) => state.resData);
     useEffect(() => {
         const fetchQuestions = async () => {
@@ -28,7 +29,7 @@ export default function PreConfiguredQuestion() {
                 // await savePreQuestion({ data })
                 const res: any = await getPreQuestion();
                 if (res) {
-                    savedQuestion(res.data.results); // ✅ Correctly update Zustand state
+                    saveQuestionRef.current(res.data.results); // ✅ Correctly update Zustand state
                 }
             } catch (error) {
                 console.error("Error fetching QA:", error);
@@ -36,7 +37,7 @@ export default function PreConfiguredQuestion() {
         };
 
         fetchQuestions(); // ✅ Call the async function inside useEffect
-    }, [savedQuestion]); // ✅ Added dependencies
+    }, []); // ✅ Added dependencies
 
     const [question, setQuestion] = useState<string>("");
     const [open, setOpen] = useState<boolean>(false);
