@@ -26,3 +26,6 @@ export const deletePrequestion = (data: any) =>
 
 export const getLimitCount = (data: any) =>
   APIClient.create(`${url.AI_ANSWER}/get-limitcount`, { data });
+
+export const freeQuestionAndAnswer = (data: any) =>
+  APIClient.create(`${url.AI_ANSWER}/get-freeanswer`, data);

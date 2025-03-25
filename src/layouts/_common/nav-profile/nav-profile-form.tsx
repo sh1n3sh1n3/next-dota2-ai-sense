@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+// import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -30,7 +30,8 @@ type Props = {
 
 function NavProfileForm({ onClose }: Props) {
   const { user } = useAuthUser();
-  const { initialize, login } = useAuthContext();
+  // const { initialize, login } = useAuthContext();
+  const { login } = useAuthContext();
   const [player, setPlayer] = useState<any>("")
   useEffect(() => {
     const storedPlayer = localStorage.getItem("user");
@@ -43,11 +44,11 @@ function NavProfileForm({ onClose }: Props) {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const NewUserSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    country: Yup.string().required('Country is required'),
-  });
+  // const NewUserSchema = Yup.object().shape({
+  //   name: Yup.string().required('Name is required'),
+  //   email: Yup.string().required('Email is required').email('Email must be a valid email address'),
+  //   country: Yup.string().required('Country is required'),
+  // });
 
   const defaultValues = useMemo(
     () => ({
@@ -81,7 +82,7 @@ function NavProfileForm({ onClose }: Props) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const steamid = player.steamid;
+      const { steamid } = player;
       if (steamid) {
         await updateProfile({ email: data.email, steamid })
         reset();

@@ -1,7 +1,7 @@
 'use client';
 
 // @mui
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
 import Container from '@mui/material/Container';
 
 import { useEffect, useRef, useState } from 'react';
@@ -23,7 +23,10 @@ export default function PreConfiguredQuestion() {
     const savedQuestion = usePreQuestion((state) => state.saveQuestion);
     const saveQuestionRef = useRef(savedQuestion);
     const preQuestions = usePreQuestion((state) => state.resData);
+    const hasRun = useRef(false);
     useEffect(() => {
+        if (hasRun.current) return; // Prevents second execution
+        hasRun.current = true;
         const fetchQuestions = async () => {
             try {
                 // await savePreQuestion({ data })
@@ -94,14 +97,14 @@ export default function PreConfiguredQuestion() {
         setQuestion(questionText);
     };
 
-    const handleQUestion = () => {
-        setLoading(true);
+    const handleQuestion = () => {
+        // setLoading(true);
         if (state) {
             handleEditPreQuestion(questionId, question)
         } else {
             handleSavePrequestion(question);
         }
-        setLoading(false);
+        // setLoading(false);
     }
 
     return (
@@ -172,7 +175,7 @@ export default function PreConfiguredQuestion() {
                     <Button
                         variant='outlined'
                         color='primary'
-                        onClick={handleQUestion}
+                        onClick={handleQuestion}
                     >
                         {/* {loading ? <CircularProgress size={24} /> : state ? "Edit" : "Save"} */}
                         {state ? "Edit" : "Save"}

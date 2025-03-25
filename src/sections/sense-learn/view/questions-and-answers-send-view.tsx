@@ -1,25 +1,20 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 // @mui
 import Container from '@mui/material/Container';
 import { Box, Skeleton, Stack, Typography } from '@mui/material';
 
-// _mock
-import { _questions } from 'src/_mock';
-
 // components
 import AppHeader from 'src/components/app-header';
 import { useSnackbar } from 'src/components/snackbar';
-import { aiAnswer, saveQA } from 'src/helper/api_steam_helper';
+import { aiAnswer, freeQuestionAndAnswer, saveActionLog, saveQA } from 'src/helper/api_steam_helper';
 import { usePreQuestion } from 'src/store/qa.store';
 
 // relative imports (last)
 import { MatchBox, MessageBox, DetaultQuestionBox } from '../components';
 
-
-// ----------------------------------------------------------------------
 
 type Props = {
   id: string;
@@ -32,43 +27,83 @@ type chatType = {
 
 export default function QuestionsAndAnswersSendView({ id }: Props) {
   const { enqueueSnackbar } = useSnackbar();
-  const preQuestions = usePreQuestion((state) => state.resData);
+  // const preQuestions = usePreQuestion((state) => state.resData);
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState('');
   const [chatId, setChatId] = useState<string>();
+  const [matchId, setMatchId] = useState<string>();
   const [QA, setQA] = useState<chatType[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const hasRun = useRef(false);
+  // const defaultQuestion = preQuestions[Number(id)];
+  const storageQuestion = localStorage.getItem("storage-question") ?? ""
 
-  const defaultQuestion = preQuestions[Number(id)];
+  const { question } = JSON.parse(storageQuestion);
+  console.log("question", question)
 
-
-  // ✅ Scroll down function
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // ✅ Scroll down when messages change
   useEffect(() => {
     scrollToBottom();
   }, [QA]);
+
+  const freeQuestion = useCallback(async () => {
+    setLoading(true);
+    setValue('');
+
+    try {
+      const storedPlayer = localStorage.getItem("user");
+      if (storedPlayer) {
+        const { steamid } = JSON.parse(storedPlayer);
+        const payload = { message: question, chatId, steamid };
+
+        const res: any = await freeQuestionAndAnswer(payload);
+
+        if (res?.data?.result) {
+          setQA((prevQA) => [...prevQA, { type: "answer", text: res.data.result }]);
+
+          if (res?.data?.userId) {
+            setChatId(res.data.userId);
+          }
+        }
+      }
+    } catch (error) {
+      if (error.status === 429) {
+        enqueueSnackbar("Monthly API limit reached!", { variant: "error" });
+      } else enqueueSnackbar("Server error!", { variant: "error" });
+      console.error("Error fetching AI response:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [enqueueSnackbar, chatId, question]);
+
+  useEffect(() => {
+    if (hasRun.current) return;
+    hasRun.current = true;
+
+    if (id === "free-question") {
+      freeQuestion();
+    }
+  }, [id, freeQuestion]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
 
   const handleSend = async () => {
-    if (!value.trim()) return; // Prevent sending empty messages
-    setLoading(true); // Start loading
-    // Append the new question to the conversation
+    if (!value.trim()) return;
+    setLoading(true);
     setQA(prevQA => [...prevQA, { type: 'question', text: value }]);
-    setValue(''); // Clear input after sending
+    setValue('');
     try {
       const storedPlayer = localStorage.getItem("user");
       if (storedPlayer) {
         const { steamid } = JSON.parse(storedPlayer);
         const payload = chatId
-          ? { message: value, chatId, steamid }
-          : { message: value, chatId, steamid, defaultQuestion: defaultQuestion.text };
+          ? { message: value, chatId, steamid, }
+          : { message: value, chatId, steamid, defaultQuestion: question };
 
         const res: any = await aiAnswer(payload);
 
@@ -77,7 +112,10 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
           setQA(prevQA => [...prevQA, { type: 'answer', text: res.data.result }]);
 
           if (res?.data?.userId) {
-            setChatId(res.data.userId); // Ensure the chat ID is updated if present
+            setChatId(res.data.userId);
+          }
+          if (res?.data?.matchId) {
+            setMatchId(res.data.matchId);
           }
         }
       }
@@ -88,7 +126,7 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
       else enqueueSnackbar('Server error!', { variant: 'error' });
       console.error("Error fetching AI response:", error);
     } finally {
-      setLoading(false); // Stop loading after response
+      setLoading(false);
     }
   };
 
@@ -97,7 +135,7 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
     if (storedPlayer) {
       const { steamid } = JSON.parse(storedPlayer);
       const messages = [QA[questionNumber - 1], QA[questionNumber]];
-      const data = { messages, steamid };
+      const data = { messages, steamid, matchId };
       try {
         await saveQA({ data });
         enqueueSnackbar('Successfully saved answer.');
@@ -108,14 +146,14 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
     }
   }
 
-  const handleSaveAction = async (questionNumber: number) => {
+  const handleSaveAction = async (questionNumber: number, actionType: string) => {
     const storedPlayer = localStorage.getItem("user");
     if (storedPlayer) {
       const { steamid } = JSON.parse(storedPlayer);
       const messages = QA[questionNumber - 1];
-      const data = { messages, steamid };
+      const data = { messages, steamid, action: actionType };
       try {
-        await saveQA({ data });
+        await saveActionLog({ data });
         enqueueSnackbar('Successfully saved answer.');
       } catch (error) {
         console.error("error ", error)
@@ -146,7 +184,7 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
           <Stack spacing={1} direction="column" alignContent="flex-start" sx={{ width: 1 }}>
             <DetaultQuestionBox action>
               <Typography variant="h6" sx={{ fontWeight: 400 }}>
-                {defaultQuestion?.question}
+                {question}
               </Typography>
             </DetaultQuestionBox>
           </Stack>
@@ -154,7 +192,7 @@ export default function QuestionsAndAnswersSendView({ id }: Props) {
           {QA.map((item, index) => (
             <>
               {item.type === 'answer' ? (
-                <DetaultQuestionBox handleSaveAnswer={() => handleSaveAnswer(index)}>
+                <DetaultQuestionBox handleSaveAnswer={handleSaveAnswer} handleSaveAction={handleSaveAction} index={index}>
                   <Typography variant="inherit" sx={{ fontWeight: 400 }} dangerouslySetInnerHTML={{ __html: item.text.replace(/[*#]/g, "").replace(/\n/g, "<br />") }} />
 
                 </DetaultQuestionBox>

@@ -35,7 +35,8 @@ type Props = CardProps & {
 
 export default function PricingCard({ plan, active, currentPlan, sx, ...other }: Props) {
   const { subscription, price, caption, period, description, lists } = plan;
-  const { initialize, login } = useAuthContext();
+  // const { initialize, login } = useAuthContext();
+  const { login } = useAuthContext();
   const storedPlayer = localStorage.getItem("user");
   const steamid = storedPlayer ? JSON.parse(storedPlayer)?.steamid : null; // Ensure steamid is accessible
   const { enqueueSnackbar } = useSnackbar();
@@ -101,7 +102,7 @@ export default function PricingCard({ plan, active, currentPlan, sx, ...other }:
       }
       const response: any = await purchasePlan(data)
 
-      const { clientSecret, customerId, message } = response.data;
+      const { clientSecret, customerId } = response.data;
       if (!clientSecret && customerId) throw new Error("Failed to create or update subscription");
 
 

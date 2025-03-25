@@ -4,15 +4,11 @@ import { useEffect, useRef } from 'react';
 // @mui
 import Container from '@mui/material/Container';
 import { Box, Stack, Typography } from '@mui/material';
-// _mock
-// import { _questions, } from 'src/_mock';
+
 import { useQAStore } from 'src/store/qa.store';
 // components
 import AppHeader from 'src/components/app-header';
-//
 import { MatchBox, DetaultQuestionBox } from '../components';
-
-// ----------------------------------------------------------------------
 
 type Props = {
     id: string;
@@ -27,17 +23,22 @@ export default function SavedAnswersSendView({ id }: Props) {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const savedQA = useQAStore((state) => state.resData);
     const QA: chatType[] = savedQA[Number(id)].messages;
+    const { matchId } = savedQA[Number(id)];
 
-
-    // ✅ Scroll down function
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    // ✅ Scroll down when messages change
     useEffect(() => {
         scrollToBottom();
     }, []);
+
+    const handleQuestionTitle = (title: string) => {
+        if (title === matchId || !matchId) {
+            return title;
+        }
+        return `${title} (${matchId})`;
+    }
 
     return (
         <Container maxWidth="lg">
@@ -68,7 +69,7 @@ export default function SavedAnswersSendView({ id }: Props) {
                             ) : (
                                 <MatchBox>
                                     <Typography variant="h6" sx={{ fontWeight: 400 }}>
-                                        {item.text}
+                                        {handleQuestionTitle(item.text)}
                                     </Typography>
                                 </MatchBox>
                             )}

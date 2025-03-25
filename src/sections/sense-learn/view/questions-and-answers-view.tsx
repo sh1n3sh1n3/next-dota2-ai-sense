@@ -1,14 +1,11 @@
 'use client';
 
 // React
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // MUI
 import Container from '@mui/material/Container';
 import { Box } from '@mui/material';
-
-// _mock
-import { _questions } from 'src/_mock';
 
 // routes
 import { paths } from 'src/routes/paths';
@@ -25,21 +22,24 @@ import { getLimitCount, getPreQuestion } from 'src/helper/api_steam_helper';
 // local components (relative imports last)
 import { MessageBox, QuestionBox, UpgradeBox } from '../components';
 
-
-// ----------------------------------------------------------------------
-
 export default function QuestionsAndAnswersView() {
   const { user } = useAuthUser();
   const router = useRouter();
   const preQuestions = usePreQuestion((state) => state.resData);
   const savedQuestion = usePreQuestion((state) => state.saveQuestion)
   const [count, setCount] = useState<number>(0);
+  const [value, setValue] = useState<string>('')
+  const hasRun = useRef(false);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+  };
   const storedPlayer = localStorage.getItem("user");
   useEffect(() => {
+    if (hasRun.current) return;
+    hasRun.current = true;
     const fetchQuestions = async () => {
       if (storedPlayer) {
         try {
-          // await savePreQuestion({ data })
           const { steamid } = JSON.parse(storedPlayer);
           const data = { steamid }
           const res: any = await getPreQuestion({});
@@ -48,7 +48,7 @@ export default function QuestionsAndAnswersView() {
             setCount(resData.data.count)
           }
           if (res) {
-            savedQuestion(res.data.results); // ✅ Correctly update Zustand state
+            savedQuestion(res.data.results);
           }
         } catch (error) {
           console.error("Error fetching QA:", error);
@@ -56,11 +56,18 @@ export default function QuestionsAndAnswersView() {
       }
     };
 
-    fetchQuestions(); // ✅ Call the async function inside useEffect
-  }, [savedQuestion, storedPlayer]); // ✅ Added dependencies
+    fetchQuestions();
+  }, [savedQuestion, storedPlayer]);
   const handleClick = (id: string) => {
+    const question = preQuestions[id]
+    localStorage.setItem("storage-question", JSON.stringify(question));
     router.push(paths.dashboard.senseLearn.questionsAndAnswers.send(id));
   };
+  const handleFreeQuestion = () => {
+    if (!value.trim()) return;
+    localStorage.setItem("storage-question", JSON.stringify({ question: value }));
+    router.push(paths.dashboard.senseLearn.questionsAndAnswers.send('free-question'));
+  }
 
   return (
     <Container maxWidth="xl">
@@ -80,7 +87,7 @@ export default function QuestionsAndAnswersView() {
           />
         ))}
       </Box>
-      <MessageBox sx={{ pt: 5 }} onSend={() => ''} />
+      <MessageBox value={value} onChange={handleChange} sx={{ pt: 5 }} onSend={() => handleFreeQuestion()} />
     </Container>
   );
 }

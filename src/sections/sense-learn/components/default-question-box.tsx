@@ -13,11 +13,19 @@ export type QuestionType = {
 };
 
 interface defaultQuestionBoxProps extends BoxProps {
-  handleSaveAnswer?: () => void;
+  index?: number;
+  handleSaveAnswer?: (index: number) => void;
+  handleSaveAction?: (index: number, actionType: string) => void;
   action?: boolean
 }
-export default function DetaultQuestionBox({ handleSaveAnswer, action, children, sx, ...other }: defaultQuestionBoxProps) {
+export default function DetaultQuestionBox({ handleSaveAnswer, handleSaveAction, index, action, children, sx, ...other }: defaultQuestionBoxProps) {
   const [actionType, setActionType] = useState<string>();
+  const handleActionType = (type: string) => {
+    if (handleSaveAction && index) {
+      handleSaveAction(index, type);
+    }
+    setActionType(type);
+  }
   const theme = useTheme();
 
   return (
@@ -57,11 +65,11 @@ export default function DetaultQuestionBox({ handleSaveAnswer, action, children,
                 justifyContent="space-between"
                 sx={{ px: 1, py: 0.5 }}
               >
-                <IconButton sx={{ p: 0 }} onClick={handleSaveAnswer}>
+                <IconButton sx={{ p: 0 }} onClick={() => handleSaveAnswer && index && handleSaveAnswer(index)}>
                   <Iconify icon="solar:download-linear" width={17} sx={{ color: 'text.disabled' }} />
                 </IconButton>
                 {!actionType && (
-                  <IconButton sx={{ p: 0 }} onClick={() => setActionType("like")}>
+                  <IconButton sx={{ p: 0 }} onClick={() => handleActionType("like")}>
                     <Iconify icon="iconamoon:like" width={17} sx={{ color: 'text.disabled' }} />
                   </IconButton>
                 )}
@@ -72,7 +80,7 @@ export default function DetaultQuestionBox({ handleSaveAnswer, action, children,
                   </IconButton>
                 )}
                 {!actionType && (
-                  <IconButton sx={{ p: 0 }} onClick={() => setActionType("dislike")}>
+                  <IconButton sx={{ p: 0 }} onClick={() => handleActionType("dislike")}>
                     <Iconify icon="iconamoon:dislike" width={17} sx={{ color: 'text.disabled' }} />
                   </IconButton>
                 )}

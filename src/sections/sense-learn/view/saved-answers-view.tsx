@@ -3,13 +3,9 @@
 import { useEffect, useRef } from 'react';
 // @mui
 import Container from '@mui/material/Container';
-// _mock
-// import { _answers } from 'src/_mock';
 // routes
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-// hooks
-// import { useAuthUser } from 'src/hooks/use-auth';
 // components
 import AppHeader from 'src/components/app-header';
 // store
@@ -20,19 +16,19 @@ import { getQA } from 'src/helper/api_steam_helper';
 import { Box } from '@mui/material';
 import { QuestionBox } from '../components';
 
-// ----------------------------------------------------------------------
-
 export default function SavedAnswersView() {
   // const { user } = useAuthUser();
   const router = useRouter();
-
+  const hasRun = useRef(false);
   const handleClick = (id: string) => {
     router.push(paths.dashboard.senseLearn.savedAnswers.send(id));
   };
-  const saveQAData = useQAStore((state) => state.saveQAData); // ✅ Extract Zustand function properly
+  const saveQAData = useQAStore((state) => state.saveQAData);
   const saveQADataRef = useRef(saveQAData);
   const savedQA = useQAStore((state) => state.resData);
   useEffect(() => {
+    if (hasRun.current) return;
+    hasRun.current = true;
     const fetchQA = async () => {
       try {
         const storedPlayer = localStorage.getItem("user");
@@ -55,6 +51,13 @@ export default function SavedAnswersView() {
     fetchQA();
   }, []);
 
+  const handleQuestionTitle = (title: string, matchId: string) => {
+    if (title === matchId || !matchId) {
+      return title;
+    }
+    return `${title} (${matchId})`;
+  }
+
   return (
     <Container maxWidth="xl">
       <AppHeader title="Saved answers" />
@@ -65,7 +68,7 @@ export default function SavedAnswersView() {
         sx={{ p: 2 }}
       >
         {savedQA?.map((item: any, index: any) => (
-          <QuestionBox type="answer" text={item.messages[0].text} onClick={() => handleClick(`${index}`)} key={index} />
+          <QuestionBox type="answer" text={handleQuestionTitle(item.messages[0].text, item.matchId)} onClick={() => handleClick(`${index}`)} key={index} />
         ))}
       </Box>
     </Container>
